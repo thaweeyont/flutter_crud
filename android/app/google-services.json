@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "913697870737",
+    "project_id": "tracking-44f32",
+    "storage_bucket": "tracking-44f32.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913697870737:android:12bd5e01edfd23c5360030",
+        "android_client_info": {
+          "package_name": "com.example.flutter_crud"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "913697870737-rkd6use7m84bpgjvd2su030p00oqjtft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWt1rMDqpUwRpqCPLBgVxZlT0PZJCMFVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "913697870737-rkd6use7m84bpgjvd2su030p00oqjtft.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913697870737:android:136f0f878de227ac360030",
+        "android_client_info": {
+          "package_name": "com.twytrack.flutter_crud"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "913697870737-3mj8bsmpmp13k6heiggetv1ot0cs1ima.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.twytrack.flutter_crud",
+            "certificate_hash": "b0b497c132e88b61c42f22e750c0acace10c4dfc"
+          }
+        },
+        {
+          "client_id": "913697870737-rkd6use7m84bpgjvd2su030p00oqjtft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWt1rMDqpUwRpqCPLBgVxZlT0PZJCMFVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "913697870737-rkd6use7m84bpgjvd2su030p00oqjtft.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
