@@ -13,8 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 void main() async {
+  // await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
