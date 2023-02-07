@@ -142,252 +142,274 @@ class Promotion_data extends StatelessWidget {
               ),
               itemCount: items.length,
               itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Image.memory(
-                                  convertBase64Image(
-                                      items[index].ribbonPromotion.toString()),
-                                  gaplessPlayback: true,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Image.memory(
+                                    convertBase64Image(items[index]
+                                        .ribbonPromotion
+                                        .toString()),
+                                    gaplessPlayback: true,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                  ),
+                                ),
+                                date_time_st(
+                                    context,
+                                    items[index].startPromotion,
+                                    items[index].endPromotion)
+                              ],
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.width * 0.32,
+                              // color: Colors.grey[300],
+                              child: ClipRRect(
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.fill,
+                                  imageUrl:
+                                      "https://www.thaweeyont.com/img/banner/${items[index].promotionBaner}",
+                                  placeholder: (context, url) {
+                                    return Container(
+                                      child: SkeletonContainer.square(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        radins: 0,
+                                      ),
+                                    );
+                                  },
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
                                 ),
                               ),
-                              date_time_st(context, items[index].startPromotion,
-                                  items[index].endPromotion)
-                            ],
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: MediaQuery.of(context).size.width * 0.32,
-                            // color: Colors.grey[300],
-                            child: ClipRRect(
-                              child: CachedNetworkImage(
-                                fit: BoxFit.fill,
-                                imageUrl:
-                                    "https://www.thaweeyont.com/img/banner/${items[index].promotionBaner}",
-                                placeholder: (context, url) {
-                                  return Container(
-                                    child: SkeletonContainer.square(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      radins: 0,
-                                    ),
-                                  );
-                                },
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
                             ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.25,
-                            child: GridView(
-                              scrollDirection: Axis.horizontal,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 1,
-                                crossAxisSpacing: 5,
-                                childAspectRatio: 1.3,
-                              ),
-                              children: [
-                                for (var i = 0; i < item.length; i++)
-                                  if (item[i].idPromotion ==
-                                      items[index].idRunPromotion) ...[
-                                    Stack(
-                                      children: [
-                                        InkWell(
-                                          onTap: () async {
-                                            await launch(
-                                                "https://www.thaweeyont.com/detail_product?product_id=${item[i].idProduct}");
-                                          },
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                top: 8, right: 10),
-                                            color: Colors.grey[200],
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                ClipRect(
-                                                  // child: Banner(
-                                                  // message:
-                                                  //     "${items[index].namePromotion}",
-                                                  // location:
-                                                  //     BannerLocation.topEnd,
-                                                  // color: Colors.red,
-                                                  child: Stack(
-                                                    children: [
-                                                      CachedNetworkImage(
-                                                        imageUrl:
-                                                            "https://www.thaweeyont.com/${item[i].imgLocation}",
-                                                        placeholder:
-                                                            (context, url) {
-                                                          return Container(
-                                                            child:
-                                                                SkeletonContainer
-                                                                    .square(
-                                                              width: double
-                                                                  .infinity,
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .height *
-                                                                  0.20,
-                                                              radins: 0,
-                                                            ),
-                                                          );
-                                                        },
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            Icon(Icons.error),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        bottom: 0,
-                                                        child: ClipPath(
-                                                          // clipper: MyClipper(),
-                                                          child: Image.memory(
-                                                            convertBase64Image(
-                                                                items[index]
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.25,
+                              child: GridView(
+                                scrollDirection: Axis.horizontal,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  crossAxisSpacing: 5,
+                                  childAspectRatio: 1.3,
+                                ),
+                                children: [
+                                  for (var i = 0; i < item.length; i++)
+                                    if (item[i].idPromotion ==
+                                        items[index].idRunPromotion) ...[
+                                      Stack(
+                                        children: [
+                                          InkWell(
+                                            onTap: () async {
+                                              await launch(
+                                                  "https://www.thaweeyont.com/detail_product?product_id=${item[i].idProduct}");
+                                            },
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 8, right: 10),
+                                              color: Colors.grey[200],
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    ClipRect(
+                                                      // child: Banner(
+                                                      // message:
+                                                      //     "${items[index].namePromotion}",
+                                                      // location:
+                                                      //     BannerLocation.topEnd,
+                                                      // color: Colors.red,
+                                                      child: Stack(
+                                                        children: [
+                                                          CachedNetworkImage(
+                                                            imageUrl:
+                                                                "https://www.thaweeyont.com/${item[i].imgLocation}",
+                                                            placeholder:
+                                                                (context, url) {
+                                                              return Container(
+                                                                child:
+                                                                    SkeletonContainer
+                                                                        .square(
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .height *
+                                                                      0.20,
+                                                                  radins: 0,
+                                                                ),
+                                                              );
+                                                            },
+                                                            errorWidget:
+                                                                (context, url,
+                                                                        error) =>
+                                                                    Icon(Icons
+                                                                        .error),
+                                                          ),
+                                                          Positioned(
+                                                            left: 0,
+                                                            bottom: 0,
+                                                            child: ClipPath(
+                                                              // clipper: MyClipper(),
+                                                              child:
+                                                                  Image.memory(
+                                                                convertBase64Image(items[
+                                                                        index]
                                                                     .ribbonPromotion
                                                                     .toString()),
-                                                            gaplessPlayback:
-                                                                true,
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.2,
+                                                                gaplessPlayback:
+                                                                    true,
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.2,
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                // ),
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: SizedBox(
-                                                        // height: 5,
-                                                        width: double.infinity,
-                                                        child: Text(
-                                                          "${item[i].nameProduct}",
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
+                                                        ],
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 2),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Row(
-                                                          children: [
-                                                            // Text(
-                                                            //   " \฿10000",
-                                                            //   style: TextStyle(
-                                                            //     color: Colors
-                                                            //         .black
-                                                            //         .withOpacity(
-                                                            //             0.5),
-                                                            //     fontSize: 14,
-                                                            //     fontWeight:
-                                                            //         FontWeight
-                                                            //             .bold,
-                                                            //     decoration:
-                                                            //         TextDecoration
-                                                            //             .lineThrough,
-                                                            //   ),
-                                                            // ),
-                                                            // SizedBox(width: 10),
-                                                            ClipPath(
-                                                              clipper:
-                                                                  CuponClipper(),
-                                                              child: Container(
-                                                                padding: EdgeInsets
-                                                                    .only(
+                                                    // ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 2,
+                                                          horizontal: 4),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: SizedBox(
+                                                              // height: 5,
+                                                              width: double
+                                                                  .infinity,
+                                                              child: Text(
+                                                                "${item[i].nameProduct}",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 4,
+                                                              right: 2,
+                                                              bottom: 8),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Row(
+                                                              children: [
+                                                                // Text(
+                                                                //   " \฿10000",
+                                                                //   style: TextStyle(
+                                                                //     color: Colors
+                                                                //         .black
+                                                                //         .withOpacity(
+                                                                //             0.5),
+                                                                //     fontSize: 14,
+                                                                //     fontWeight:
+                                                                //         FontWeight
+                                                                //             .bold,
+                                                                //     decoration:
+                                                                //         TextDecoration
+                                                                //             .lineThrough,
+                                                                //   ),
+                                                                // ),
+                                                                // SizedBox(width: 10),
+                                                                ClipPath(
+                                                                  clipper:
+                                                                      CuponClipper(),
+                                                                  child:
+                                                                      Container(
+                                                                    padding: EdgeInsets.only(
                                                                         left:
                                                                             10,
                                                                         right:
                                                                             10),
-                                                                color: Colors
-                                                                    .yellow,
-                                                                child:
-                                                                    hiddent_price(
-                                                                        item,
-                                                                        i),
-                                                              ),
+                                                                    color: Colors
+                                                                        .yellow,
+                                                                    child:
+                                                                        hiddent_price(
+                                                                            item,
+                                                                            i),
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        // Positioned(
-                                        //   right: 9.5,
-                                        //   top: 7.5,
-                                        //   child: ClipPath(
-                                        //     clipper: MyClipper(),
-                                        //     child: Container(
-                                        //       color: Colors.yellow,
-                                        //       padding: EdgeInsets.all(4),
-                                        //       child: Column(
-                                        //         children: [
-                                        //           Text(
-                                        //             "ลด",
-                                        //             style: MyConstant()
-                                        //                 .small_text(
-                                        //                     Colors.white),
-                                        //           ),
-                                        //           Text(
-                                        //             "❤",
-                                        //             style: MyConstant()
-                                        //                 .small_text(Colors.red),
-                                        //           ),
-                                        //           // show_per(index),
-                                        //         ],
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                      ],
-                                    ),
-                                  ],
-                              ],
+                                          // Positioned(
+                                          //   right: 9.5,
+                                          //   top: 7.5,
+                                          //   child: ClipPath(
+                                          //     clipper: MyClipper(),
+                                          //     child: Container(
+                                          //       color: Colors.yellow,
+                                          //       padding: EdgeInsets.all(4),
+                                          //       child: Column(
+                                          //         children: [
+                                          //           Text(
+                                          //             "ลด",
+                                          //             style: MyConstant()
+                                          //                 .small_text(
+                                          //                     Colors.white),
+                                          //           ),
+                                          //           Text(
+                                          //             "❤",
+                                          //             style: MyConstant()
+                                          //                 .small_text(Colors.red),
+                                          //           ),
+                                          //           // show_per(index),
+                                          //         ],
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                        ],
+                                      ),
+                                    ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 15,
-                      child: Container(
-                        color: Colors.grey[200],
-                      ),
-                    )
-                  ],
+                      SizedBox(
+                        height: 15,
+                        child: Container(
+                          color: Colors.grey[200],
+                        ),
+                      )
+                    ],
+                  ),
                 );
               }),
         );
@@ -976,7 +998,7 @@ class data_product_hot extends StatelessWidget {
 }
 
 class list_product_hot extends StatelessWidget {
-  const list_product_hot({
+  const  list_product_hot({
     Key? key,
     required this.items,
   }) : super(key: key);
