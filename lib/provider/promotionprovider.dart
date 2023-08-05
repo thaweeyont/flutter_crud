@@ -16,8 +16,13 @@ class Promotion with ChangeNotifier {
   getpromotion() async {
     var date = formatter.format(now);
     try {
-      var respose = await http.get(Uri.http(ipconfig_web,
-          '/api_mobile/promotion.php', {"datenow": date.toString()}));
+      var respose = await http.get(Uri.http(
+        ipconfig_web,
+        '/api_mobile/promotion.php',
+        {
+          "datenow": date.toString(),
+        },
+      ));
       if (respose.statusCode == 200) {
         // print(respose.body);
         datapromotion = promotionmodelFromJson(respose.body);

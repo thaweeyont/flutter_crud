@@ -265,6 +265,7 @@ class _Edit_profileState extends State<Edit_profile> {
                   return null;
                 },
                 decoration: InputDecoration(
+                  counterText: "",
                   contentPadding: EdgeInsets.all(4),
                   isDense: true,
                   enabledBorder: MyConstant().border,

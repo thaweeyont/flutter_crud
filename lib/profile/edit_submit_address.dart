@@ -284,6 +284,7 @@ class _Edit_submit_addressState extends State<Edit_submit_address> {
               controller: text_address,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(4),
+                counterText: "",
                 isDense: true,
                 enabledBorder: MyConstant().border,
                 focusedBorder: MyConstant().border,

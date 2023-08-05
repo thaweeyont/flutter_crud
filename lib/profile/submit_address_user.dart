@@ -269,6 +269,7 @@ class _Submit_add_addressState extends State<Submit_add_address> {
               maxLines: null,
               controller: text_address,
               decoration: InputDecoration(
+                counterText: "",
                 contentPadding: EdgeInsets.all(4),
                 isDense: true,
                 enabledBorder: MyConstant().border,

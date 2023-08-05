@@ -483,24 +483,27 @@ class _TagUserState extends State<TagUser> {
       );
 
   Widget no_data(size) => Expanded(
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.inbox,
-                size: size * 0.10,
-                color: Colors.grey[350],
-              ),
-              Text(
-                "ไม่พบข้อมูล",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey[400],
-                  fontFamily: 'Prompt',
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.inbox,
+                  size: size * 0.10,
+                  color: Colors.grey[350],
                 ),
-              ),
-            ],
+                Text(
+                  "ไม่พบข้อมูล",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.grey[400],
+                    fontFamily: 'Prompt',
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

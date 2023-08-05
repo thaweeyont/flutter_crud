@@ -5,6 +5,8 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:sizer/sizer.dart';
+import 'package:flutter_crud/profile/profile_user.dart';
+import 'package:http/http.dart' as http;
 
 Future<Null> normalDialog(
     BuildContext context, String title, String message) async {
@@ -208,3 +210,5 @@ Future<Null> showProgressDialog(BuildContext context) async {
     ),
   );
 }
+
+

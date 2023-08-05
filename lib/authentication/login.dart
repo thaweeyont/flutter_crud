@@ -21,6 +21,7 @@ class LOGIN extends StatefulWidget {
 class _LOGINState extends State<LOGIN> {
   TextEditingController idcard = TextEditingController();
   List<Loginusermodel> datauser = [];
+  var data;
   String? token;
   bool _isLoggedIn = false;
   Map _userobj = {};
@@ -44,12 +45,28 @@ class _LOGINState extends State<LOGIN> {
         setState(() {
           datauser = loginusermodelFromJson(respose.body);
         });
+        print('data>>${respose.body}');
         gettoken();
       }
     } catch (e) {
-      print("ไม่มีข้อมูล");
-      Navigator.pop(context);
-      normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูล");
+      var respose = await http.get(
+        Uri.http(ipconfig, '/flutter_api/api_user/check_idcard_delete.php',
+            {"id_card": id_card}),
+      );
+      if (respose.statusCode == 200) {
+        if (respose.body == "1") {
+          Navigator.pop(context);
+          normalDialog(
+              context, 'แจ้งเตือน', "${id_card} \nได้ลบบัญชีผู้ใช้ไปแล้ว");
+        } else {
+          Navigator.pop(context);
+          normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูลบัญชีนี้");
+        }
+      } else {
+        print("ไม่มีข้อมูล");
+        Navigator.pop(context);
+        normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูล");
+      }
     }
   }
 
@@ -63,6 +80,7 @@ class _LOGINState extends State<LOGIN> {
     var districts = datauser[0].idDistricts;
     var profile = datauser[0].profileUser;
     var member = datauser[0].statusMember;
+    var status = datauser[0].status;
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString('id_card', id_card!);
     preferences.setString('name_user', name_user!);
@@ -73,6 +91,7 @@ class _LOGINState extends State<LOGIN> {
     preferences.setString('districts_user', districts!);
     preferences.setString('profile_user', profile!);
     preferences.setString('member', member!);
+    preferences.setString('status', status!);
     preferences.setString('status_advert', "true");
 
     if (id_card != "") {
@@ -119,6 +138,7 @@ class _LOGINState extends State<LOGIN> {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String? id_card = preferences.getString('id_card');
+      String? status = preferences.getString('status');
       if (id_card != null) {
         Navigator.pushAndRemoveUntil(
           context,
@@ -139,6 +159,7 @@ class _LOGINState extends State<LOGIN> {
       appBar: appbar(context),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        behavior: HitTestBehavior.opaque,
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -242,7 +263,7 @@ class _LOGINState extends State<LOGIN> {
         // ignore: deprecated_member_use
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            primary: Colors.red[600],
+            backgroundColor: Colors.red[600],
             animationDuration: Duration(milliseconds: 100),
             enableFeedback: true,
             shape: RoundedRectangleBorder(

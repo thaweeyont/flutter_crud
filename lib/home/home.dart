@@ -41,6 +41,13 @@ class _HomeState extends State<Home> {
   bool isloading = true;
   bool isChecked = false;
 
+  //เรียกใช้เมื่อมีการเปิดหน้านี้ขึ้นมา
+  @override
+  void initState() {
+    GetListData();
+    super.initState();
+  }
+
   //provider
   GetListData() async {
     //provider สินค้าขายดี
@@ -51,13 +58,6 @@ class _HomeState extends State<Home> {
     await context.read<ProductProvider>().clear_product();
     await context.read<ProductProvider>().getproduct(offset);
     await context.read<ProducthotProvider>().getproduct_hot();
-  }
-
-//เรียกใช้เมื่อมีการเปิดหน้านี้ขึ้นมา
-  @override
-  void initState() {
-    GetListData();
-    super.initState();
   }
 
   @override
@@ -998,7 +998,7 @@ class data_product_hot extends StatelessWidget {
 }
 
 class list_product_hot extends StatelessWidget {
-  const  list_product_hot({
+  const list_product_hot({
     Key? key,
     required this.items,
   }) : super(key: key);

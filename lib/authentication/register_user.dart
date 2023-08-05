@@ -7,6 +7,7 @@ import 'package:flutter_crud/Tap.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/models/login_usermodal.dart';
+import 'package:flutter_crud/profile/profile_user.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:flutter_crud/widget/coloricon.dart';
 import 'package:http/http.dart' as http;
@@ -229,6 +230,7 @@ class _RegisterState extends State<Register> {
                   amphures(),
                   districts(),
                   address_input(size),
+                  SizedBox(height: 40),
                   submit_register(),
                   policy(context)
                 ],
@@ -413,6 +415,7 @@ class _RegisterState extends State<Register> {
             controller: address,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.all(4),
+              counterText: "",
               isDense: true,
               enabledBorder: MyConstant().border,
               focusedBorder: MyConstant().border,

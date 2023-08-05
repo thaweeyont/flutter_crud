@@ -21,6 +21,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
 
 class PROFILE extends StatefulWidget {
   PROFILE({Key? key}) : super(key: key);
@@ -209,6 +210,11 @@ class _PROFILEState extends State<PROFILE> {
                         call(),
                         new Divider(),
                         advert_button(),
+                        if (st_show == true) ...[
+                          new Divider(),
+                          // delete_account(idcard),
+                          delete_account(context),
+                        ],
                       ],
                     ),
                   ),
@@ -218,6 +224,53 @@ class _PROFILEState extends State<PROFILE> {
                 ],
               ),
             ),
+    );
+  }
+
+  InkWell delete_account(BuildContext context) {
+    return InkWell(
+      onTap: () async {
+        print(idcard);
+        Dialog_deleteAccount(context, idcard);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.no_accounts_rounded,
+                      color: Colors.red,
+                      size: 25,
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      "ลบบัญชีผู้ใช้",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Prompt',
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Column(
+              children: [
+                Icon(
+                  Icons.navigate_next_rounded,
+                  size: 25,
+                  color: Colors.grey[600],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -328,31 +381,31 @@ class _PROFILEState extends State<PROFILE> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.04,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      _buildInputSearch(),
-                      _buildIconButton(
-                        onPressed: () async {
-                          await launch("https://www.thaweeyont.com/");
-                        },
-                        icon: Icons.shopping_cart,
-                        notification: notification,
-                      ),
-                      _buildIconButton(
-                        onPressed: () => Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TapControl("1")),
-                          (Route<dynamic> route) => false,
-                        ),
-                        icon: Icons.pin_drop_rounded,
-                      ),
-                    ],
-                  ),
-                ),
+                // SizedBox(
+                //   height: MediaQuery.of(context).size.height * 0.04,
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.end,
+                //     children: [
+                //       // _buildInputSearch(),
+                //       // _buildIconButton(
+                //       //   onPressed: () async {
+                //       //     await launch("https://www.thaweeyont.com/");
+                //       //   },
+                //       //   icon: Icons.shopping_cart,
+                //       //   notification: notification,
+                //       // ),
+                //       // _buildIconButton(
+                //       //   onPressed: () => Navigator.pushAndRemoveUntil(
+                //       //     context,
+                //       //     MaterialPageRoute(
+                //       //         builder: (context) => TapControl("1")),
+                //       //     (Route<dynamic> route) => false,
+                //       //   ),
+                //       //   icon: Icons.pin_drop_rounded,
+                //       // ),
+                //     ],
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Row(
@@ -456,74 +509,79 @@ class _PROFILEState extends State<PROFILE> {
                               // ),
                               if (name != null && st_show == true) ...[
                                 // SizedBox(width: 10),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "$name ",
-                                      style: MyConstant().normal_text(
-                                          Colors.blueGrey.shade800),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        print("ssssss");
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.only(
-                                            left: 15.0,
-                                            right: 15.0,
-                                            top: 2,
-                                            bottom: 2),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topRight,
-                                              end: Alignment.bottomLeft,
-                                              colors: [
-                                                if (member == "normal") ...[
-                                                  Colors.yellow,
-                                                  Colors.red
-                                                ] else if (member ==
-                                                    "platinum") ...[
-                                                  Colors.grey.shade300,
-                                                  Colors.grey.shade700,
-                                                ] else if (member ==
-                                                    "beyond") ...[
-                                                  Colors.white70,
-                                                  Colors.black,
-                                                ]
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "$name ",
+                                        style: MyConstant().normal_text(
+                                            Colors.blueGrey.shade800),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          print("ssssss");
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(
+                                              left: 15.0,
+                                              right: 15.0,
+                                              top: 2,
+                                              bottom: 2),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              gradient: LinearGradient(
+                                                begin: Alignment.topRight,
+                                                end: Alignment.bottomLeft,
+                                                colors: [
+                                                  if (member == "normal") ...[
+                                                    Colors.yellow,
+                                                    Colors.red
+                                                  ] else if (member ==
+                                                      "platinum") ...[
+                                                    Colors.grey.shade300,
+                                                    Colors.grey.shade700,
+                                                  ] else if (member ==
+                                                      "beyond") ...[
+                                                    Colors.white70,
+                                                    Colors.black,
+                                                  ]
+                                                ],
+                                              )),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              if (member == "normal") ...[
+                                                Text("Member Card",
+                                                    style: MyConstant()
+                                                        .small_text(
+                                                            Colors.white)),
+                                              ] else ...[
+                                                Text("$member Member",
+                                                    style: MyConstant()
+                                                        .small_text(
+                                                            Colors.white)),
                                               ],
-                                            )),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            if (member == "normal") ...[
-                                              Text("Member Card",
-                                                  style: MyConstant()
-                                                      .small_text(
-                                                          Colors.white)),
-                                            ] else ...[
-                                              Text("$member Member",
-                                                  style: MyConstant()
-                                                      .small_text(
-                                                          Colors.white)),
+                                              SizedBox(
+                                                width: 15.0,
+                                              ),
+                                              Icon(
+                                                Icons.navigate_next_rounded,
+                                                size: 25,
+                                                color: Colors.grey[600],
+                                              ),
                                             ],
-                                            SizedBox(
-                                              width: 15.0,
-                                            ),
-                                            Icon(
-                                              Icons.navigate_next_rounded,
-                                              size: 25,
-                                              color: Colors.grey[600],
-                                            ),
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ],
@@ -628,6 +686,79 @@ class _PROFILEState extends State<PROFILE> {
           ),
         ),
       );
+
+  Future<Null> delete_account_user(idcard) async {
+    var uri = Uri.parse(
+        "http://110.164.131.46/flutter_api/api_user/delete_account_user.php");
+    var request = new http.MultipartRequest("POST", uri);
+
+    request.fields['idcard'] = idcard;
+
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+
+      preferences.clear();
+      preferences.setString('st_isf', "true");
+      setState(() {
+        st_show = false;
+        name = null;
+        idcard = null;
+        profile = null;
+      });
+      print("success");
+      successDialog(context, 'แจ้งเตือน', 'ลบบัญชีผู้ใช้สำเร็จ');
+    } else {
+      print("error");
+    }
+  }
+
+  Dialog_deleteAccount(BuildContext context, idcard) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(
+        "ยกเลิก",
+        style: TextStyle(fontFamily: 'Prompt', fontSize: 16),
+      ),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text(
+        "ตกลง",
+        style: TextStyle(fontFamily: 'Prompt', fontSize: 16),
+      ),
+      onPressed: () {
+        delete_account_user(idcard);
+        Navigator.pop(context);
+        showProgressDialog(context);
+        Navigator.pop(context);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "ต้องการลบบัญชีผู้ใช้?",
+        style: TextStyle(fontFamily: 'Prompt', fontSize: 16),
+      ),
+      content: Text(
+        "หากท่านลบบัญชีนี้ไปแล้วจะไม่สามารถกู้คืนบัญชีนี้ได้อีก",
+        style: TextStyle(fontFamily: 'Prompt', fontSize: 16),
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   Container advert_button() => Container(
         padding: EdgeInsets.symmetric(vertical: 10),
@@ -818,6 +949,59 @@ class call extends StatelessWidget {
     );
   }
 }
+
+// class delete_account extends StatelessWidget {
+//   final idcard;
+//   const delete_account(this.idcard);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//       onTap: () async {
+//         print(idcard);
+//         Dialog_deleteAccount(context, idcard);
+//       },
+//       child: Container(
+//         padding: EdgeInsets.symmetric(vertical: 10),
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             Column(
+//               children: [
+//                 Row(
+//                   children: [
+//                     Icon(
+//                       Icons.no_accounts_rounded,
+//                       color: Colors.red,
+//                       size: 25,
+//                     ),
+//                     SizedBox(width: 5),
+//                     Text(
+//                       "ลบบัญชีผู้ใช้",
+//                       style: TextStyle(
+//                         fontSize: 16,
+//                         fontFamily: 'Prompt',
+//                       ),
+//                     ),
+//                   ],
+//                 )
+//               ],
+//             ),
+//             Column(
+//               children: [
+//                 Icon(
+//                   Icons.navigate_next_rounded,
+//                   size: 25,
+//                   color: Colors.grey[600],
+//                 ),
+//               ],
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class privacy extends StatelessWidget {
   @override

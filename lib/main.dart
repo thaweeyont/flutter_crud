@@ -13,9 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 void main() async {
-  // await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     runApp(MyApp());
@@ -54,7 +53,7 @@ class MyApp extends StatelessWidget {
             ),
             home: Responsive(
               mobile: TapControl("0"),
-              tablet: HomeTablet(),
+              tablet: TapControl("0"),
               desktop: Text("desktop"),
             ),
           );
