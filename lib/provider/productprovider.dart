@@ -8,7 +8,7 @@ class ProductProvider with ChangeNotifier {
   List<MainProduct> dataproduct = [];
   bool isloading = true;
   //ข้อมูลสินค้า
-  getproduct(offset) async {
+  Future<void> getproduct(offset) async {
     try {
       isloading = true;
       var respose = await http.get(Uri.http(ipconfig_web,
@@ -24,7 +24,7 @@ class ProductProvider with ChangeNotifier {
   }
 
   //ล้างข้อมูลใน list product
-  clear_product() async {
+  Future<void> clear_product() async {
     dataproduct.clear();
     notifyListeners();
   }

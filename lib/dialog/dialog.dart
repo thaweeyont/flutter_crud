@@ -39,7 +39,7 @@ Future<Null> normalDialog(
             children: [
               Text(
                 "ตกลง",
-                style: MyConstant().small_text(Colors.red),
+                style: MyConstant().normal_text(Colors.blue),
               ),
             ],
           ),
@@ -210,5 +210,3 @@ Future<Null> showProgressDialog(BuildContext context) async {
     ),
   );
 }
-
-

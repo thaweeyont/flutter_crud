@@ -2,21 +2,20 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/Tap.dart';
+import 'package:flutter_crud/authentication/login.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/models/login_usermodal.dart';
-import 'package:flutter_crud/profile/profile_user.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
-import 'package:flutter_crud/widget/coloricon.dart';
 import 'package:http/http.dart' as http;
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart';
 import 'package:nextflow_thai_personal_id/nextflow_thai_personal_id.dart';
 
 import '../privacy/Privacy.dart';
+import 'package:native_ios_dialog/native_ios_dialog.dart';
 
 class Register extends StatefulWidget {
   Register({Key? key}) : super(key: key);
@@ -34,13 +33,17 @@ class _RegisterState extends State<Register> {
   List amphures_list = [];
   List districts_list = [];
   bool show_validation = false;
+  bool statusReadEye = true;
   List<Loginusermodel> datauser = [];
   final _formKey = GlobalKey<FormState>();
+  int currentDialogStyle = 0;
+
   TextEditingController idcard = TextEditingController();
+  TextEditingController username = TextEditingController();
+  TextEditingController password = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController address = TextEditingController();
-
   ThaiIdValidator thaiIdValidator = ThaiIdValidator(
       errorMessage: 'เลขประจำตัวไม่ถูกต้องกรุณาตรวจสอบอีกครั้ง');
 
@@ -56,10 +59,12 @@ class _RegisterState extends State<Register> {
   //เรียกใช้ api เพิ่มข้อมูล
   Future register() async {
     var uri = Uri.parse(
-        "http://110.164.131.46/flutter_api/api_user/register_user.php");
+        "http://110.164.131.46/flutter_api/api_user/register_user_new.php");
     var request = new http.MultipartRequest("POST", uri);
 
-    request.fields['idcard'] = idcard.text;
+    // request.fields['idcard'] = idcard.text;
+    request.fields['username'] = username.text;
+    request.fields['password'] = password.text;
     request.fields['name'] = name.text;
     request.fields['phone'] = phone.text;
     request.fields['address'] = address.text;
@@ -69,12 +74,16 @@ class _RegisterState extends State<Register> {
 
     var response = await request.send();
     if (response.statusCode == 200) {
-      var id_card = idcard.text;
+      // var id_card = idcard.text;
+      var user_name = username.text;
+      var pass_word = password.text;
       var name_user = name.text;
       var phone_user = phone.text;
       var address_user = address.text;
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      preferences.setString('id_card', id_card);
+      // preferences.setString('id_card', id_card);
+      preferences.setString('username', user_name);
+      preferences.setString('password', pass_word);
       preferences.setString('name_user', name_user);
       preferences.setString('phone_user', phone_user);
       preferences.setString('address_user', address_user);
@@ -86,8 +95,11 @@ class _RegisterState extends State<Register> {
       preferences.setString('member', "normal");
       preferences.setString('status_advert', "true");
 
-      if (id_card != "") {
+      if (user_name != "" && pass_word != "") {
         update_token(token!);
+        // Navigator.push(context, CupertinoPageRoute(builder: (context) {
+        //   return LOGIN();
+        // }));
       }
     } else {
       print("ไม่สำเร็จ");
@@ -101,22 +113,25 @@ class _RegisterState extends State<Register> {
       });
       if (token != "" || datauser.isNotEmpty) {
         // update_token(token!);
+        print('ok->4');
         register();
       }
     });
   }
 
   Future<Null> update_token(String token) async {
-    if (idcard.text != "") {
+    if (username.text != "") {
       var uri = Uri.parse(
-          "http://110.164.131.46/flutter_api/api_user/update_token.php");
+          "http://110.164.131.46/flutter_api/api_user/update_token_new.php");
       var request = new http.MultipartRequest("POST", uri);
 
       request.fields['token'] = token;
-      request.fields['idcard'] = idcard.text;
+      request.fields['username'] = username.text;
+      // request.fields['password'] = password.text;
 
       var response = await request.send();
       if (response.statusCode == 200) {
+        print('ok->5');
         print("==================>update_token_success");
         // Navigator.pop(context);
         Navigator.pushAndRemoveUntil(
@@ -132,29 +147,64 @@ class _RegisterState extends State<Register> {
   }
 
   //function select_idcard
-  Future<void> check_idcard(String id_card) async {
+  Future<void> check_id_user(String username, name, phone) async {
+    print('ok->2');
+    final NativeIosDialogStyle style = currentDialogStyle == 0
+        ? NativeIosDialogStyle.alert
+        : NativeIosDialogStyle.actionSheet;
     try {
       var respose = await http.get(
-        Uri.http(ipconfig, '/flutter_api/api_user/check_idcard.php',
-            {"id_card": id_card}),
+        Uri.http(ipconfig, '/flutter_api/api_user/check_id_user_new.php',
+            {"username": username, "name": name, "phone": phone}),
       );
       // print(respose.body);
       if (respose.statusCode == 200) {
         if (respose.body == "1") {
-          normalDialog(context, 'แจ้งเตือน', "เลขบัตรประชาชนไม่ถูกต้อง");
-        } else if (respose.body == "0") {
+          if (defaultTargetPlatform == TargetPlatform.iOS) {
+            NativeIosDialog(
+                title: "แจ้งเตือน",
+                message: "ข้อมูลนี้ถูกใช้ลงทะเบียนไปแล้ว",
+                style: style,
+                actions: [
+                  NativeIosDialogAction(
+                      text: "ตกลง",
+                      style: NativeIosDialogActionStyle.defaultStyle,
+                      onPressed: () {}),
+                ]).show();
+          } else if (defaultTargetPlatform == TargetPlatform.android) {
+            print('Phone>>android');
+            normalDialog(
+                context, 'แจ้งเตือน', "ข้อมูลนี้ถูกใช้ลงทะเบียนไปแล้ว");
+          }
+        } else if (respose.body == "2") {
+          print('ok->3');
           showProgressDialog(context);
           gettoken();
           // Navigator.pop(context);
-        } else {
-          setState(() {
-            datauser = loginusermodelFromJson(respose.body);
-          });
-
-          if (datauser[0].idcard == idcard.text) {
-            normalDialog(context, 'แจ้งเตือน', "มีข้อมูลอยู่แล้ว");
-          }
         }
+        // else {
+        //   setState(() {
+        //     datauser = loginusermodelFromJson(respose.body);
+        //   });
+
+        //   if (datauser[0].idcard == idcard.text) {
+        //     if (defaultTargetPlatform == TargetPlatform.iOS) {
+        //       NativeIosDialog(
+        //           title: "แจ้งเตือน",
+        //           message: "มีข้อมูลอยู่แล้ว",
+        //           style: style,
+        //           actions: [
+        //             NativeIosDialogAction(
+        //                 text: "ตกลง",
+        //                 style: NativeIosDialogActionStyle.defaultStyle,
+        //                 onPressed: () {}),
+        //           ]).show();
+        //     } else if (defaultTargetPlatform == TargetPlatform.android) {
+        //       print('Phone>>android');
+        //       normalDialog(context, 'แจ้งเตือน', "มีข้อมูลอยู่แล้ว");
+        //     }
+        //   }
+        // }
       }
     } catch (e) {
       print("ไม่มีข้อมูล");
@@ -223,14 +273,16 @@ class _RegisterState extends State<Register> {
               key: _formKey,
               child: Column(
                 children: [
-                  idcard_input(size),
+                  // idcard_input(size),
+                  username_input(size),
+                  password_input(size),
                   name_input(size),
                   phone_input(size),
                   provinces(),
                   amphures(),
                   districts(),
                   address_input(size),
-                  SizedBox(height: 40),
+                  SizedBox(height: 25),
                   submit_register(),
                   policy(context)
                 ],
@@ -348,7 +400,7 @@ class _RegisterState extends State<Register> {
                   focusedBorder: MyConstant().border,
                   hintText: "ชื่อ-นามสกุล",
                   hintStyle: MyConstant().normal_text(Colors.grey),
-                  prefixIcon: Icon(Icons.account_circle),
+                  prefixIcon: Icon(Icons.person),
                   prefixIconConstraints: MyConstant().sizeIcon,
                   filled: true,
                   fillColor: MyConstant.light,
@@ -393,12 +445,93 @@ class _RegisterState extends State<Register> {
         ),
       );
 
+  Widget username_input(size) => Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: username,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'กรุณาเพิ่มชื่อผู้ใช้งาน';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(4),
+                  counterText: "",
+                  isDense: true,
+                  enabledBorder: MyConstant().border,
+                  focusedBorder: MyConstant().border,
+                  hintText: "ชื่อผู้ใช้งาน",
+                  hintStyle: MyConstant().normal_text(Colors.grey),
+                  prefixIcon: Icon(Icons.account_circle_sharp),
+                  prefixIconConstraints: MyConstant().sizeIcon,
+                  filled: true,
+                  fillColor: MyConstant.light,
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+
+  Widget password_input(size) => Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: password,
+                obscureText: statusReadEye,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'กรุณาเพิ่มรหัสผ่าน';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(4),
+                  counterText: "",
+                  isDense: true,
+                  enabledBorder: MyConstant().border,
+                  focusedBorder: MyConstant().border,
+                  hintText: "รหัสผ่าน",
+                  hintStyle: MyConstant().normal_text(Colors.grey),
+                  prefixIcon: Icon(Icons.key),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        statusReadEye = !statusReadEye;
+                      });
+                    },
+                    icon: statusReadEye
+                        ? const Icon(
+                            Icons.remove_red_eye,
+                            color: Colors.grey,
+                          )
+                        : const Icon(
+                            Icons.remove_red_eye_outlined,
+                            color: Colors.grey,
+                          ),
+                  ),
+                  prefixIconConstraints: MyConstant().sizeIcon,
+                  filled: true,
+                  fillColor: MyConstant.light,
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+
   Widget address_input(size) => Padding(
         padding: EdgeInsets.only(bottom: 10),
         child: Container(
           // height: MediaQuery.of(context).size.height * 0.25,
           child: TextFormField(
-            maxLength: 120,
+            maxLength: 100,
             style: TextStyle(
               fontSize: 16,
               fontFamily: 'Prompt',
@@ -445,13 +578,32 @@ class _RegisterState extends State<Register> {
         // color: Colors.red,
 
         onPressed: () {
+          print('submit');
+          final NativeIosDialogStyle style = currentDialogStyle == 0
+              ? NativeIosDialogStyle.alert
+              : NativeIosDialogStyle.actionSheet;
           if (_formKey.currentState!.validate()) {
-            if (idcard.text.length == 13) {
+            if (username.text.isNotEmpty && password.text.isNotEmpty) {
               String pattern = r'(^(?:[+0]9)?[0-9]{10}$)';
               RegExp regExp = new RegExp(pattern);
               if (!regExp.hasMatch(phone.text)) {
-                normalDialog(context, 'แจ้งเตือน', "เบอร์โทรไม่ถูกต้อง");
+                if (defaultTargetPlatform == TargetPlatform.iOS) {
+                  NativeIosDialog(
+                      title: "แจ้งเตือน",
+                      message: "เบอร์โทรศัพท์ไม่ถูกต้อง",
+                      style: style,
+                      actions: [
+                        NativeIosDialogAction(
+                            text: "ตกลง",
+                            style: NativeIosDialogActionStyle.defaultStyle,
+                            onPressed: () {}),
+                      ]).show();
+                } else if (defaultTargetPlatform == TargetPlatform.android) {
+                  print('Phone>>android');
+                  normalDialog(context, 'แจ้งเตือน', "เบอร์โทรศัพท์ไม่ถูกต้อง");
+                }
               } else {
+                print('ok->1');
                 if (selectedValue_provinces != null &&
                     selectedValue_amphures != null &&
                     selectedValue_districts != null) {
@@ -460,17 +612,49 @@ class _RegisterState extends State<Register> {
                   });
 
                   //สมัครสมาชิก
-                  check_idcard(idcard.text);
+                  check_id_user(username.text, name.text, phone.text);
                 } else {
-                  normalDialog(
-                      context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
-                  setState(() {
-                    show_validation = true;
-                  });
+                  if (defaultTargetPlatform == TargetPlatform.iOS) {
+                    setState(() {
+                      show_validation = true;
+                    });
+                    NativeIosDialog(
+                        title: "แจ้งเตือน",
+                        message: "กรุณาเพิ่มข้อมูลให้ครบถ้วน",
+                        style: style,
+                        actions: [
+                          NativeIosDialogAction(
+                              text: "ตกลง",
+                              style: NativeIosDialogActionStyle.defaultStyle,
+                              onPressed: () {}),
+                        ]).show();
+                  } else if (defaultTargetPlatform == TargetPlatform.android) {
+                    print('Phone>>android');
+                    normalDialog(
+                        context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                    setState(() {
+                      show_validation = true;
+                    });
+                  }
                 }
               }
             } else {
-              normalDialog(context, 'แจ้งเตือน', "เลขบัตรประชาชนไม่ถูกต้อง");
+              if (defaultTargetPlatform == TargetPlatform.iOS) {
+                NativeIosDialog(
+                    title: "แจ้งเตือน",
+                    message: "กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน",
+                    style: style,
+                    actions: [
+                      NativeIosDialogAction(
+                          text: "ตกลง",
+                          style: NativeIosDialogActionStyle.defaultStyle,
+                          onPressed: () {}),
+                    ]).show();
+              } else if (defaultTargetPlatform == TargetPlatform.android) {
+                print('Phone>>android');
+                normalDialog(
+                    context, 'แจ้งเตือน', "กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน");
+              }
             }
           }
         },

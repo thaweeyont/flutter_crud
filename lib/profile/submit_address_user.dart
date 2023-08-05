@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
+import 'package:native_ios_dialog/native_ios_dialog.dart';
 
 class Submit_add_address extends StatefulWidget {
   final double lat, lng;
@@ -29,6 +31,7 @@ class _Submit_add_addressState extends State<Submit_add_address> {
   List amphures_list = [];
   List districts_list = [];
   bool show_validation = false;
+  int currentDialogStyle = 0;
 
   @override
   void initState() {
@@ -301,6 +304,9 @@ class _Submit_add_addressState extends State<Submit_add_address> {
         // color: Colors.red,
 
         onPressed: () {
+          final NativeIosDialogStyle style = currentDialogStyle == 0
+              ? NativeIosDialogStyle.alert
+              : NativeIosDialogStyle.actionSheet;
           if (_formKey.currentState!.validate()) {
             if (selectedValue_provinces != null &&
                 selectedValue_amphures != null &&
@@ -308,10 +314,28 @@ class _Submit_add_addressState extends State<Submit_add_address> {
               // print("success");
               add_address();
             } else {
-              setState(() {
-                show_validation = true;
-              });
-              normalDialog(context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+              if (defaultTargetPlatform == TargetPlatform.iOS) {
+                setState(() {
+                  show_validation = true;
+                });
+                NativeIosDialog(
+                    title: "แจ้งเตือน",
+                    message: "กรุณาเพิ่มข้อมูลให้ครบถ้วน",
+                    style: style,
+                    actions: [
+                      NativeIosDialogAction(
+                          text: "ตกลง",
+                          style: NativeIosDialogActionStyle.defaultStyle,
+                          onPressed: () {}),
+                    ]).show();
+              } else if (defaultTargetPlatform == TargetPlatform.android) {
+                print('Phone>>android');
+                setState(() {
+                  show_validation = true;
+                });
+                normalDialog(
+                    context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+              }
             }
           }
         },

@@ -15,6 +15,8 @@ class Loginusermodel {
   Loginusermodel({
     this.id,
     this.idcard,
+    this.username,
+    this.password,
     this.fullname,
     this.addressUser,
     this.provincesU,
@@ -48,6 +50,8 @@ class Loginusermodel {
 
   String? id;
   String? idcard;
+  String? username;
+  String? password;
   String? fullname;
   String? addressUser;
   String? provincesU;
@@ -81,6 +85,8 @@ class Loginusermodel {
   factory Loginusermodel.fromJson(Map<String, dynamic> json) => Loginusermodel(
         id: json["id"] == null ? null : json["id"],
         idcard: json["idcard"] == null ? null : json["idcard"],
+        username: json["user_name"] == null ? null : json["user_name"],
+        password: json["pass_word"] == null ? null : json["pass_word"],
         fullname: json["fullname"] == null ? null : json["fullname"],
         addressUser: json["address_user"] == null ? null : json["address_user"],
         provincesU: json["provinces_u"] == null ? null : json["provinces_u"],
@@ -122,6 +128,8 @@ class Loginusermodel {
   Map<String, dynamic> toJson() => {
         "id": id == null ? null : id,
         "idcard": idcard == null ? null : idcard,
+        "user_name": username == null ? null : username,
+        "pass_word": password == null ? null : password,
         "fullname": fullname == null ? null : fullname,
         "address_user": addressUser == null ? null : addressUser,
         "provinces_u": provincesU == null ? null : provincesU,

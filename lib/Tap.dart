@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/contact/contact.dart';
 import 'package:flutter_crud/home/home.dart';
@@ -62,6 +63,16 @@ class _TapControlState extends State<TapControl> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  Future<void> check_emu() async {
+    setState(() {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        PROFILE();
+      } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+        print('ios success');
+      }
     });
   }
 

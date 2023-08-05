@@ -61,6 +61,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   geolocator: ^7.2.0+1
   google_maps_flutter: ^2.0.6
+  native_ios_dialog: ^0.2.0
   # flutter_launcher_icons: ^0.9.0
 
 # flutter_icons:

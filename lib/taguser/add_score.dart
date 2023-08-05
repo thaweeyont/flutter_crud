@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_crud/Tap.dart';
@@ -18,6 +19,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sizer/sizer.dart';
+import 'package:native_ios_dialog/native_ios_dialog.dart';
 
 class AddScore extends StatefulWidget {
   final String id_job_gen,
@@ -60,6 +62,8 @@ class _AddScoreState extends State<AddScore> {
   bool loading_mec = false;
   final key1_mec = UniqueKey();
   final key2_mec = UniqueKey();
+
+  int currentDialogStyle = 0;
 
   TextEditingController message_by = TextEditingController();
   TextEditingController message_cr = TextEditingController();
@@ -2132,16 +2136,47 @@ class _AddScoreState extends State<AddScore> {
             ),
           ),
           onPressed: () {
+            final NativeIosDialogStyle style = currentDialogStyle == 0
+                ? NativeIosDialogStyle.alert
+                : NativeIosDialogStyle.actionSheet;
             if (file2 != null) {
               if (score_buy != 0 || score_credit != 0 || score_mechanic != 0) {
                 showProgressDialog(context);
                 insert_img();
               } else {
-                normalDialog(context, 'แจ้งเตือน', 'กรุณาให้คะแนนพนักงาน');
+                if (defaultTargetPlatform == TargetPlatform.iOS) {
+                  NativeIosDialog(
+                      title: "แจ้งเตือน",
+                      message: "กรุณาให้คะแนนพนักงาน",
+                      style: style,
+                      actions: [
+                        NativeIosDialogAction(
+                            text: "ตกลง",
+                            style: NativeIosDialogActionStyle.defaultStyle,
+                            onPressed: () {}),
+                      ]).show();
+                } else if (defaultTargetPlatform == TargetPlatform.android) {
+                  print('Phone>>android');
+                  normalDialog(context, 'แจ้งเตือน', 'กรุณาให้คะแนนพนักงาน');
+                }
               }
             } else {
-              normalDialog(
-                  context, 'แจ้งเตือน', 'กรุณาเพิ่มใบเสร็จ / ภาพการติดตั้ง');
+              if (defaultTargetPlatform == TargetPlatform.iOS) {
+                NativeIosDialog(
+                    title: "แจ้งเตือน",
+                    message: "กรุณาเพิ่มใบเสร็จ / ภาพการติดตั้ง",
+                    style: style,
+                    actions: [
+                      NativeIosDialogAction(
+                          text: "ตกลง",
+                          style: NativeIosDialogActionStyle.defaultStyle,
+                          onPressed: () {}),
+                    ]).show();
+              } else if (defaultTargetPlatform == TargetPlatform.android) {
+                print('Phone>>android');
+                normalDialog(
+                    context, 'แจ้งเตือน', 'กรุณาเพิ่มใบเสร็จ / ภาพการติดตั้ง');
+              }
             }
           },
         ),

@@ -584,6 +584,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  native_ios_dialog:
+    dependency: "direct main"
+    description:
+      name: native_ios_dialog
+      sha256: a6c9ac11614b0c4742cb59599a46391b288f287e57de17645a40f31940a6f969
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   nested:
     dependency: transitive
     description:

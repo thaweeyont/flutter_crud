@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_crud/widget/coloricon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
+import 'package:native_ios_dialog/native_ios_dialog.dart';
 
 class Edit_profile extends StatefulWidget {
   Edit_profile({Key? key}) : super(key: key);
@@ -17,12 +19,23 @@ class Edit_profile extends StatefulWidget {
 }
 
 class _Edit_profileState extends State<Edit_profile> {
-  var name, idcard, phone, address, provinces_u, amphures_u, districts_u;
+  var username,
+      password,
+      name,
+      idcard,
+      phone,
+      address,
+      provinces_u,
+      amphures_u,
+      districts_u;
+  TextEditingController username_t = TextEditingController();
+  TextEditingController password_t = TextEditingController();
   TextEditingController idcar_t = TextEditingController();
   TextEditingController name_t = TextEditingController();
   TextEditingController phone_t = TextEditingController();
   TextEditingController address_t = TextEditingController();
   bool show_validation = false;
+  bool statusReadEye = true;
   String? selectedValue_provinces;
   String? selectedValue_amphures;
   String? selectedValue_districts;
@@ -30,6 +43,7 @@ class _Edit_profileState extends State<Edit_profile> {
   List amphures_list = [];
   List districts_list = [];
   final _formKey = GlobalKey<FormState>();
+  int currentDialogStyle = 0;
 
   @override
   void initState() {
@@ -41,9 +55,11 @@ class _Edit_profileState extends State<Edit_profile> {
   //เรียกใช้ api เพิ่มข้อมูล
   Future update_profile() async {
     var uri = Uri.parse(
-        "http://110.164.131.46/flutter_api/api_user/edit_profile.php");
+        "http://110.164.131.46/flutter_api/api_user/edit_profile_new.php");
     var request = new http.MultipartRequest("POST", uri);
-    request.fields['idcard'] = idcard;
+    // request.fields['idcard'] = idcard;
+    request.fields['username'] = username;
+    request.fields['password'] = password_t.text.toString();
     request.fields['name'] = name_t.text.toString();
     request.fields['phone'] = phone_t.text.toString();
     request.fields['address'] = address_t.text.toString();
@@ -53,7 +69,9 @@ class _Edit_profileState extends State<Edit_profile> {
 
     var response = await request.send();
     if (response.statusCode == 200) {
-      var idcard_log = idcard;
+      // var idcard_log = idcard;
+      var username_log = username;
+      var password_log = password_t.text.toString();
       var name_log = name_t.text.toString();
       var phone_log = phone_t.text.toString();
       var address_log = address_t.text.toString();
@@ -62,7 +80,9 @@ class _Edit_profileState extends State<Edit_profile> {
       var districts_log = selectedValue_districts.toString();
       SharedPreferences preferences = await SharedPreferences.getInstance();
       preferences.clear();
-      preferences.setString('id_card', idcard_log!);
+      // preferences.setString('id_card', idcard_log!);
+      preferences.setString('username', username_log!);
+      preferences.setString('password', password_log);
       preferences.setString('name_user', name_log);
       preferences.setString('phone_user', phone_log);
       preferences.setString('address_user', address_log);
@@ -78,6 +98,8 @@ class _Edit_profileState extends State<Edit_profile> {
   Future<Null> getprofile_user() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
+      username = preferences.getString('username');
+      password = preferences.getString('password');
       name = preferences.getString('name_user');
       idcard = preferences.getString('id_card');
       phone = preferences.getString('phone_user');
@@ -89,6 +111,8 @@ class _Edit_profileState extends State<Edit_profile> {
       get_amphures(provinces_u);
       get_districts(amphures_u);
 
+      username_t.text = username;
+      password_t.text = password;
       name_t.text = name;
       phone_t.text = phone;
       address_t.text = address;
@@ -163,6 +187,8 @@ class _Edit_profileState extends State<Edit_profile> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    username_input(size),
+                    password_input(size),
                     name_input(size),
                     phone_input(size),
                     provinces(),
@@ -216,6 +242,89 @@ class _Edit_profileState extends State<Edit_profile> {
     );
   }
 
+  Widget username_input(size) => Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                style: MyConstant().normal_text(Colors.black),
+                controller: username_t,
+                readOnly: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'กรุณาเพิ่มชื่อผู้ใช้งาน';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  // contentPadding: EdgeInsets.all(4),
+                  // isDense: true,
+                  enabled: false,
+                  enabledBorder: MyConstant().border,
+                  focusedBorder: MyConstant().border,
+                  hintText: "ชื่อผู้ใช้งาน",
+                  hintStyle: MyConstant().normal_text(Colors.grey),
+                  prefixIcon: Icon(Icons.account_circle),
+                  prefixIconConstraints: MyConstant().sizeIcon,
+                  filled: true,
+                  fillColor: MyConstant.light,
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+
+  Widget password_input(size) => Padding(
+        padding: EdgeInsets.only(bottom: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                style: MyConstant().normal_text(Colors.black),
+                controller: password_t,
+                obscureText: statusReadEye,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'กรุณาเพิ่มรหัสผ่าน';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(4),
+                  isDense: true,
+                  enabledBorder: MyConstant().border,
+                  focusedBorder: MyConstant().border,
+                  hintText: "รหัสผ่าน",
+                  hintStyle: MyConstant().normal_text(Colors.grey),
+                  prefixIcon: Icon(Icons.key),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        statusReadEye = !statusReadEye;
+                      });
+                    },
+                    icon: statusReadEye
+                        ? const Icon(
+                            Icons.remove_red_eye,
+                            color: Colors.grey,
+                          )
+                        : const Icon(
+                            Icons.remove_red_eye_outlined,
+                            color: Colors.grey,
+                          ),
+                  ),
+                  prefixIconConstraints: MyConstant().sizeIcon,
+                  filled: true,
+                  fillColor: MyConstant.light,
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+
   Widget name_input(size) => Padding(
         padding: EdgeInsets.only(bottom: 10),
         child: Row(
@@ -237,7 +346,7 @@ class _Edit_profileState extends State<Edit_profile> {
                   focusedBorder: MyConstant().border,
                   hintText: "ชื่อ-นามสกุล",
                   hintStyle: MyConstant().normal_text(Colors.grey),
-                  prefixIcon: Icon(Icons.account_circle),
+                  prefixIcon: Icon(Icons.person),
                   prefixIconConstraints: MyConstant().sizeIcon,
                   filled: true,
                   fillColor: MyConstant.light,
@@ -330,16 +439,37 @@ class _Edit_profileState extends State<Edit_profile> {
         // color: Colors.red,
 
         onPressed: () {
+          final NativeIosDialogStyle style = currentDialogStyle == 0
+              ? NativeIosDialogStyle.alert
+              : NativeIosDialogStyle.actionSheet;
           if (_formKey.currentState!.validate()) {
             if (selectedValue_provinces != null &&
                 selectedValue_amphures != null &&
                 selectedValue_districts != null) {
               update_profile();
             } else {
-              setState(() {
-                show_validation = true;
-              });
-              normalDialog(context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+              if (defaultTargetPlatform == TargetPlatform.iOS) {
+                setState(() {
+                  show_validation = true;
+                });
+                NativeIosDialog(
+                    title: "แจ้งเตือน",
+                    message: "กรุณาเพิ่มข้อมูลให้ครบถ้วน",
+                    style: style,
+                    actions: [
+                      NativeIosDialogAction(
+                          text: "ตกลง",
+                          style: NativeIosDialogActionStyle.defaultStyle,
+                          onPressed: () {}),
+                    ]).show();
+              } else if (defaultTargetPlatform == TargetPlatform.android) {
+                print('Phone>>android');
+                setState(() {
+                  show_validation = true;
+                });
+                normalDialog(
+                    context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+              }
             }
           }
         },

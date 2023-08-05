@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/privacy/Privacy.dart';
 import 'package:flutter_crud/Tap.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_crud/authentication/register_user.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:native_ios_dialog/native_ios_dialog.dart';
 
 class LOGIN extends StatefulWidget {
   LOGIN({Key? key}) : super(key: key);
@@ -20,11 +22,15 @@ class LOGIN extends StatefulWidget {
 
 class _LOGINState extends State<LOGIN> {
   TextEditingController idcard = TextEditingController();
+  TextEditingController username = TextEditingController();
+  TextEditingController password = TextEditingController();
   List<Loginusermodel> datauser = [];
   var data;
   String? token;
   bool _isLoggedIn = false;
+  bool statusReadEye = true;
   Map _userobj = {};
+  int currentDialogStyle = 0;
 
   @override
   void initState() {
@@ -34,11 +40,14 @@ class _LOGINState extends State<LOGIN> {
   }
 
   //function select_idcard
-  Future<void> login_user(String id_card) async {
+  Future<void> login_user(String username, String password) async {
+    final NativeIosDialogStyle style = currentDialogStyle == 0
+        ? NativeIosDialogStyle.alert
+        : NativeIosDialogStyle.actionSheet;
     try {
       var respose = await http.get(
-        Uri.http(ipconfig, '/flutter_api/api_user/login_user.php',
-            {"id_card": id_card}),
+        Uri.http(ipconfig, '/flutter_api/api_user/login_user_new.php',
+            {"username": username, "password": password}),
       );
       // print(respose.body);
       if (respose.statusCode == 200) {
@@ -50,28 +59,73 @@ class _LOGINState extends State<LOGIN> {
       }
     } catch (e) {
       var respose = await http.get(
-        Uri.http(ipconfig, '/flutter_api/api_user/check_idcard_delete.php',
-            {"id_card": id_card}),
+        Uri.http(ipconfig, '/flutter_api/api_user/check_id_delete_new.php',
+            {"username": username, "password": password}),
       );
       if (respose.statusCode == 200) {
         if (respose.body == "1") {
-          Navigator.pop(context);
-          normalDialog(
-              context, 'แจ้งเตือน', "${id_card} \nได้ลบบัญชีผู้ใช้ไปแล้ว");
+          if (defaultTargetPlatform == TargetPlatform.iOS) {
+            NativeIosDialog(
+                title: "แจ้งเตือน",
+                message: "บัญชีนี้ลบไปแล้ว",
+                style: style,
+                actions: [
+                  NativeIosDialogAction(
+                      text: "ตกลง",
+                      style: NativeIosDialogActionStyle.defaultStyle,
+                      onPressed: () {}),
+                ]).show();
+            Navigator.pop(context);
+          } else if (defaultTargetPlatform == TargetPlatform.android) {
+            print('Phone>>android');
+            Navigator.pop(context);
+            normalDialog(context, 'แจ้งเตือน', "บัญชีนี้ลบไปแล้ว");
+          }
         } else {
-          Navigator.pop(context);
-          normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูลบัญชีนี้");
+          if (defaultTargetPlatform == TargetPlatform.iOS) {
+            NativeIosDialog(
+                title: "แจ้งเตือน",
+                message: "ไม่พบข้อมูลบัญชีนี้",
+                style: style,
+                actions: [
+                  NativeIosDialogAction(
+                      text: "ตกลง",
+                      style: NativeIosDialogActionStyle.defaultStyle,
+                      onPressed: () {}),
+                ]).show();
+            Navigator.pop(context);
+          } else if (defaultTargetPlatform == TargetPlatform.android) {
+            print('Phone>>android');
+            Navigator.pop(context);
+            normalDialog(context, 'แจ้งเตือน', "ไม่พบข้อมูลบัญชีนี้");
+          }
         }
       } else {
-        print("ไม่มีข้อมูล");
-        Navigator.pop(context);
-        normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูล");
+        if (defaultTargetPlatform == TargetPlatform.iOS) {
+          NativeIosDialog(
+              title: "แจ้งเตือน",
+              message: "ไม่มีข้อมูล",
+              style: style,
+              actions: [
+                NativeIosDialogAction(
+                    text: "ตกลง",
+                    style: NativeIosDialogActionStyle.defaultStyle,
+                    onPressed: () {}),
+              ]).show();
+        } else if (defaultTargetPlatform == TargetPlatform.android) {
+          print('Phone>>android');
+          print("ไม่มีข้อมูล");
+          Navigator.pop(context);
+          normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูล");
+        }
       }
     }
   }
 
   Future<Null> loginlog() async {
-    var id_card = datauser[0].idcard;
+    // var id_card = datauser[0].idcard;
+    var username = datauser[0].username;
+    var password = datauser[0].password;
     var name_user = datauser[0].fullname;
     var phone_user = datauser[0].phoneUser;
     var address_user = datauser[0].addressUser;
@@ -82,7 +136,9 @@ class _LOGINState extends State<LOGIN> {
     var member = datauser[0].statusMember;
     var status = datauser[0].status;
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString('id_card', id_card!);
+    // preferences.setString('id_card', id_card!);
+    preferences.setString('username', username!);
+    preferences.setString('password', password!);
     preferences.setString('name_user', name_user!);
     preferences.setString('phone_user', phone_user!);
     preferences.setString('address_user', address_user!);
@@ -94,7 +150,7 @@ class _LOGINState extends State<LOGIN> {
     preferences.setString('status', status!);
     preferences.setString('status_advert', "true");
 
-    if (id_card != "") {
+    if (username != "") {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => TapControl("3")),
@@ -115,17 +171,20 @@ class _LOGINState extends State<LOGIN> {
   }
 
   Future<Null> update_token(String token) async {
-    if (idcard.text != "") {
+    print('testToken');
+    if (username.text != "") {
       var uri = Uri.parse(
-          "http://110.164.131.46/flutter_api/api_user/update_token.php");
+          "http://110.164.131.46/flutter_api/api_user/update_token_new.php");
       var request = new http.MultipartRequest("POST", uri);
 
       request.fields['token'] = token;
-      request.fields['idcard'] = idcard.text;
+      request.fields['username'] = username.text;
+      // request.fields['password'] = password.text;
 
       var response = await request.send();
       if (response.statusCode == 200) {
         print("==================>update_token_success");
+        print(token);
         Navigator.pop(context);
         loginlog();
       } else {
@@ -137,9 +196,11 @@ class _LOGINState extends State<LOGIN> {
   Future<Null> checkPreferance() async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      String? id_card = preferences.getString('id_card');
+      // String? id_card = preferences.getString('id_card');
+      String? username = preferences.getString('username');
+      String? password = preferences.getString('password');
       String? status = preferences.getString('status');
-      if (id_card != null) {
+      if (username != null) {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => TapControl("0")),
@@ -164,7 +225,8 @@ class _LOGINState extends State<LOGIN> {
           child: Column(
             children: [
               logo(context: context),
-              id_card_user(size),
+              // id_card_user(size),
+              inputLogin(size)
               // or_line(),
               // btn_facebook()
             ],
@@ -203,6 +265,102 @@ class _LOGINState extends State<LOGIN> {
     );
   }
 
+  Container inputLogin(size) {
+    final sizeIcon = BoxConstraints(minWidth: 40, minHeight: 40);
+    final border = OutlineInputBorder(
+      borderSide: const BorderSide(
+        color: Colors.transparent,
+        width: 0,
+      ),
+      borderRadius: const BorderRadius.all(
+        const Radius.circular(4.0),
+      ),
+    );
+    return Container(
+      margin: EdgeInsets.only(top: 40),
+      padding: EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: username,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(4),
+                    counterText: "",
+                    isDense: true,
+                    enabledBorder: border,
+                    focusedBorder: border,
+                    hintText: "ชื่อผู้ใช้งาน",
+                    hintStyle: TextStyle(
+                      fontFamily: 'Prompt',
+                      fontSize: 16,
+                      color: Colors.grey[400],
+                    ),
+                    prefixIcon: Icon(Icons.account_circle_sharp),
+                    prefixIconConstraints: sizeIcon,
+                    // suffixIcon: Icon(Icons.camera_alt),
+                    // suffixIconConstraints: sizeIcon,
+                    filled: true,
+                    fillColor: Colors.transparent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          new Divider(),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: password,
+                  obscureText: statusReadEye,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(4),
+                    counterText: "",
+                    isDense: true,
+                    enabledBorder: border,
+                    focusedBorder: border,
+                    hintText: "รหัสผ่าน",
+                    hintStyle: TextStyle(
+                      fontFamily: 'Prompt',
+                      fontSize: 16,
+                      color: Colors.grey[400],
+                    ),
+                    prefixIcon: Icon(Icons.key),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          statusReadEye = !statusReadEye;
+                        });
+                      },
+                      icon: statusReadEye
+                          ? const Icon(
+                              Icons.remove_red_eye,
+                              color: Colors.grey,
+                            )
+                          : const Icon(
+                              Icons.remove_red_eye_outlined,
+                              color: Colors.grey,
+                            ),
+                    ),
+                    prefixIconConstraints: sizeIcon,
+                    filled: true,
+                    fillColor: Colors.transparent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          new Divider(),
+          submit_login(size),
+          register(context: context),
+        ],
+      ),
+    );
+  }
+
   Container id_card_user(size) {
     final sizeIcon = BoxConstraints(minWidth: 40, minHeight: 40);
 
@@ -226,8 +384,10 @@ class _LOGINState extends State<LOGIN> {
                 child: TextField(
                   controller: idcard,
                   keyboardType: TextInputType.number,
+                  maxLength: 13,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(4),
+                    counterText: "",
                     isDense: true,
                     enabledBorder: border,
                     focusedBorder: border,
@@ -260,7 +420,6 @@ class _LOGINState extends State<LOGIN> {
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.05),
         width: double.infinity,
         height: MediaQuery.of(context).size.height * 0.045,
-        // ignore: deprecated_member_use
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red[600],
@@ -271,11 +430,44 @@ class _LOGINState extends State<LOGIN> {
             ),
           ),
           onPressed: () {
-            if (idcard.text.isEmpty) {
-              normalDialog(context, 'แจ้งเตือน', "กรุณากรอกเลขบัตร....");
+            final NativeIosDialogStyle style = currentDialogStyle == 0
+                ? NativeIosDialogStyle.alert
+                : NativeIosDialogStyle.actionSheet;
+            if (username.text.isEmpty) {
+              if (defaultTargetPlatform == TargetPlatform.iOS) {
+                NativeIosDialog(
+                    title: "แจ้งเตือน",
+                    message: "กรุณากรอก Username",
+                    style: style,
+                    actions: [
+                      NativeIosDialogAction(
+                          text: "ตกลง",
+                          style: NativeIosDialogActionStyle.defaultStyle,
+                          onPressed: () {}),
+                    ]).show();
+              } else if (defaultTargetPlatform == TargetPlatform.android) {
+                print('Phone>>android');
+                normalDialog(context, 'แจ้งเตือน', "กรุณากรอก Username");
+              }
+            } else if (password.text.isEmpty) {
+              if (defaultTargetPlatform == TargetPlatform.iOS) {
+                NativeIosDialog(
+                    title: "แจ้งเตือน",
+                    message: "กรุณากรอก Password",
+                    style: style,
+                    actions: [
+                      NativeIosDialogAction(
+                          text: "ตกลง",
+                          style: NativeIosDialogActionStyle.defaultStyle,
+                          onPressed: () {}),
+                    ]).show();
+              } else if (defaultTargetPlatform == TargetPlatform.android) {
+                print('Phone>>android');
+                normalDialog(context, 'แจ้งเตือน', "กรุณากรอก Password");
+              }
             } else {
               showProgressDialog(context);
-              login_user(idcard.text);
+              login_user(username.text, password.text);
             }
           },
           icon: Icon(Icons.vpn_key_rounded, size: 20),
@@ -288,6 +480,56 @@ class _LOGINState extends State<LOGIN> {
           ),
         ),
       );
+
+  // Widget submit_login(size) => Container(
+  //       margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.05),
+  //       width: double.infinity,
+  //       height: MediaQuery.of(context).size.height * 0.045,
+  //       // ignore: deprecated_member_use
+  //       child: ElevatedButton.icon(
+  //         style: ElevatedButton.styleFrom(
+  //           backgroundColor: Colors.red[600],
+  //           animationDuration: Duration(milliseconds: 100),
+  //           enableFeedback: true,
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(5),
+  //           ),
+  //         ),
+  //         onPressed: () {
+  //           final NativeIosDialogStyle style = currentDialogStyle == 0
+  //               ? NativeIosDialogStyle.alert
+  //               : NativeIosDialogStyle.actionSheet;
+  //           if (idcard.text.isEmpty) {
+  //             if (defaultTargetPlatform == TargetPlatform.iOS) {
+  //               NativeIosDialog(
+  //                   title: "แจ้งเตือน",
+  //                   message: "กรุณากรอกเลขบัตรประชาชน",
+  //                   style: style,
+  //                   actions: [
+  //                     NativeIosDialogAction(
+  //                         text: "ตกลง",
+  //                         style: NativeIosDialogActionStyle.defaultStyle,
+  //                         onPressed: () {}),
+  //                   ]).show();
+  //             } else if (defaultTargetPlatform == TargetPlatform.android) {
+  //               print('Phone>>android');
+  //               normalDialog(context, 'แจ้งเตือน', "กรุณากรอกเลขบัตร....");
+  //             }
+  //           } else {
+  //             showProgressDialog(context);
+  //             login_user(idcard.text);
+  //           }
+  //         },
+  //         icon: Icon(Icons.vpn_key_rounded, size: 20),
+  //         label: Text(
+  //           "เข้าสู่ระบบ",
+  //           style: TextStyle(
+  //             fontFamily: 'Prompt',
+  //             fontSize: 14,
+  //           ),
+  //         ),
+  //       ),
+  //     );
 }
 
 class btn_facebook extends StatelessWidget {
