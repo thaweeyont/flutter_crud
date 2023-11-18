@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crud/advice/advice.dart';
 import 'package:flutter_crud/privacy/Privacy.dart';
 import 'package:flutter_crud/Tap.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
@@ -34,7 +35,6 @@ class _LOGINState extends State<LOGIN> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     checkPreferance();
   }
@@ -79,7 +79,8 @@ class _LOGINState extends State<LOGIN> {
           } else if (defaultTargetPlatform == TargetPlatform.android) {
             print('Phone>>android');
             Navigator.pop(context);
-            normalDialog(context, 'แจ้งเตือน', "บัญชีนี้ลบไปแล้ว");
+            // normalDialog(context, 'แจ้งเตือน', "บัญชีนี้ลบไปแล้ว");
+            nDialog(context, 'แจ้งเตือน', 'บัญชีนี้ถูกลบแล้ว');
           }
         } else {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -97,7 +98,8 @@ class _LOGINState extends State<LOGIN> {
           } else if (defaultTargetPlatform == TargetPlatform.android) {
             print('Phone>>android');
             Navigator.pop(context);
-            normalDialog(context, 'แจ้งเตือน', "ไม่พบข้อมูลบัญชีนี้");
+            // normalDialog(context, 'แจ้งเตือน', "ไม่พบข้อมูลบัญชีนี้");
+            nDialog(context, 'แจ้งเตือน', 'ไม่พบข้อมูลบัญชีนี้');
           }
         }
       } else {
@@ -116,7 +118,8 @@ class _LOGINState extends State<LOGIN> {
           print('Phone>>android');
           print("ไม่มีข้อมูล");
           Navigator.pop(context);
-          normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูล");
+          // normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูล");
+          nDialog(context, 'แจ้งเตือน', 'ไม่มีข้อมูล');
         }
       }
     }
@@ -151,6 +154,8 @@ class _LOGINState extends State<LOGIN> {
     preferences.setString('status_advert', "true");
 
     if (username != "") {
+      print('1>> $profile');
+      print('2>> $member');
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => TapControl("3")),
@@ -184,7 +189,6 @@ class _LOGINState extends State<LOGIN> {
       var response = await request.send();
       if (response.statusCode == 200) {
         print("==================>update_token_success");
-        print(token);
         Navigator.pop(context);
         loginlog();
       } else {
@@ -200,6 +204,7 @@ class _LOGINState extends State<LOGIN> {
       String? username = preferences.getString('username');
       String? password = preferences.getString('password');
       String? status = preferences.getString('status');
+
       if (username != null) {
         Navigator.pushAndRemoveUntil(
           context,
@@ -244,7 +249,12 @@ class _LOGINState extends State<LOGIN> {
             color: Colors.red[700],
           ),
           onPressed: () {
-            Navigator.pop(context);
+            // Navigator.pop(context);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => TapControl("3")),
+              (Route<dynamic> route) => false,
+            );
           }),
       // centerTitle: true,
       backgroundColor: Colors.grey[100],
@@ -447,7 +457,8 @@ class _LOGINState extends State<LOGIN> {
                     ]).show();
               } else if (defaultTargetPlatform == TargetPlatform.android) {
                 print('Phone>>android');
-                normalDialog(context, 'แจ้งเตือน', "กรุณากรอก Username");
+                // normalDialog(context, 'แจ้งเตือน', "กรุณากรอก Username");
+                nDialog(context, 'แจ้งเตือน', 'กรุณากรอก Username');
               }
             } else if (password.text.isEmpty) {
               if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -463,7 +474,8 @@ class _LOGINState extends State<LOGIN> {
                     ]).show();
               } else if (defaultTargetPlatform == TargetPlatform.android) {
                 print('Phone>>android');
-                normalDialog(context, 'แจ้งเตือน', "กรุณากรอก Password");
+                // normalDialog(context, 'แจ้งเตือน', "กรุณากรอก Password");
+                nDialog(context, 'แจ้งเตือน', 'กรุณากรอก Password');
               }
             } else {
               showProgressDialog(context);
@@ -598,6 +610,24 @@ class register extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            InkWell(
+              onTap: () {
+                Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                  return Advice();
+                }));
+              },
+              child: Text(
+                '*ข้อเสนอแนะการเข้าใช้งาน',
+                style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontFamily: 'Prompt',
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            Container(
+              child: new Divider(),
+            ),
             InkWell(
               onTap: () {
                 Navigator.push(context, CupertinoPageRoute(builder: (context) {

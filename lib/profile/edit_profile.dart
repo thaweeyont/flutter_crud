@@ -2,13 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crud/Tap.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
-import 'package:flutter_crud/widget/coloricon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:sizer/sizer.dart';
 import 'package:native_ios_dialog/native_ios_dialog.dart';
 
 class Edit_profile extends StatefulWidget {
@@ -27,7 +26,9 @@ class _Edit_profileState extends State<Edit_profile> {
       address,
       provinces_u,
       amphures_u,
-      districts_u;
+      districts_u,
+      profile,
+      member;
   TextEditingController username_t = TextEditingController();
   TextEditingController password_t = TextEditingController();
   TextEditingController idcar_t = TextEditingController();
@@ -47,7 +48,6 @@ class _Edit_profileState extends State<Edit_profile> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getprofile_user();
   }
@@ -57,7 +57,6 @@ class _Edit_profileState extends State<Edit_profile> {
     var uri = Uri.parse(
         "http://110.164.131.46/flutter_api/api_user/edit_profile_new.php");
     var request = new http.MultipartRequest("POST", uri);
-    // request.fields['idcard'] = idcard;
     request.fields['username'] = username;
     request.fields['password'] = password_t.text.toString();
     request.fields['name'] = name_t.text.toString();
@@ -69,7 +68,6 @@ class _Edit_profileState extends State<Edit_profile> {
 
     var response = await request.send();
     if (response.statusCode == 200) {
-      // var idcard_log = idcard;
       var username_log = username;
       var password_log = password_t.text.toString();
       var name_log = name_t.text.toString();
@@ -78,9 +76,10 @@ class _Edit_profileState extends State<Edit_profile> {
       var provinces_log = selectedValue_provinces.toString();
       var amphures_log = selectedValue_amphures.toString();
       var districts_log = selectedValue_districts.toString();
+      var profile_log = profile.toString();
+      var member_log = member.toString();
       SharedPreferences preferences = await SharedPreferences.getInstance();
       preferences.clear();
-      // preferences.setString('id_card', idcard_log!);
       preferences.setString('username', username_log!);
       preferences.setString('password', password_log);
       preferences.setString('name_user', name_log);
@@ -89,7 +88,15 @@ class _Edit_profileState extends State<Edit_profile> {
       preferences.setString('provinces_user', provinces_log);
       preferences.setString('amphures_user', amphures_log);
       preferences.setString('districts_user', districts_log);
-      Navigator.pop(context);
+      preferences.setString('profile_user', profile_log);
+      preferences.setString('member', member_log);
+
+      print('profile>$profile_log');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => TapControl("3")),
+        (Route<dynamic> route) => false,
+      );
     } else {
       print("แก้ไขข้อมูลไม่สำเร็จ");
     }
@@ -101,15 +108,18 @@ class _Edit_profileState extends State<Edit_profile> {
       username = preferences.getString('username');
       password = preferences.getString('password');
       name = preferences.getString('name_user');
-      idcard = preferences.getString('id_card');
       phone = preferences.getString('phone_user');
       address = preferences.getString('address_user');
       provinces_u = preferences.getString('provinces_user');
       amphures_u = preferences.getString('amphures_user');
       districts_u = preferences.getString('districts_user');
+      profile = preferences.getString('profile_user');
+      member = preferences.getString('member');
       get_provinces();
       get_amphures(provinces_u);
       get_districts(amphures_u);
+      print('p>>$profile');
+      print('m>>$member');
 
       username_t.text = username;
       password_t.text = password;
@@ -405,7 +415,6 @@ class _Edit_profileState extends State<Edit_profile> {
               return null;
             },
             minLines: 5,
-            // keyboardType: TextInputType.multiline,
             maxLines: null,
             controller: address_t,
             decoration: InputDecoration(
@@ -432,12 +441,9 @@ class _Edit_profileState extends State<Edit_profile> {
           backgroundColor: Colors.red,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
-            // side: BorderSide(color: Colors.white),
           ),
           padding: EdgeInsets.all(8),
         ),
-        // color: Colors.red,
-
         onPressed: () {
           final NativeIosDialogStyle style = currentDialogStyle == 0
               ? NativeIosDialogStyle.alert
@@ -446,6 +452,7 @@ class _Edit_profileState extends State<Edit_profile> {
             if (selectedValue_provinces != null &&
                 selectedValue_amphures != null &&
                 selectedValue_districts != null) {
+              showProgressDialog(context);
               update_profile();
             } else {
               if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -467,8 +474,9 @@ class _Edit_profileState extends State<Edit_profile> {
                 setState(() {
                   show_validation = true;
                 });
-                normalDialog(
-                    context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                // normalDialog(
+                //     context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                nDialog(context, 'แจ้งเตือน', 'กรุณาเพิ่มข้อมูลให้ครบถ้วน');
               }
             }
           }
@@ -507,6 +515,7 @@ class _Edit_profileState extends State<Edit_profile> {
           ),
           iconSize: 24,
           elevation: 16,
+          isExpanded: true,
           style: TextStyle(
               fontFamily: 'Prompt', fontSize: 16, color: Colors.black),
           underline: SizedBox(),
@@ -552,6 +561,7 @@ class _Edit_profileState extends State<Edit_profile> {
           //     Icons.arrow_downward),
           iconSize: 24,
           elevation: 16,
+          isExpanded: true,
           style: TextStyle(
               fontFamily: 'Prompt', fontSize: 16, color: Colors.black),
 
@@ -594,17 +604,14 @@ class _Edit_profileState extends State<Edit_profile> {
                 fontFamily: 'Prompt', fontSize: 16, color: Colors.grey),
           ),
           value: selectedValue_districts,
-          // icon: const Icon(
-          //     Icons.arrow_downward),
           iconSize: 24,
           elevation: 16,
+          isExpanded: true,
           style: TextStyle(
               fontFamily: 'Prompt', fontSize: 16, color: Colors.black),
-
           underline: SizedBox(),
           onChanged: (String? newValue) {
             if (newValue != null) {
-              // get_amphures(newValue);
               setState(() {
                 selectedValue_districts = newValue;
               });
@@ -612,12 +619,14 @@ class _Edit_profileState extends State<Edit_profile> {
           },
           items: districts_list.isEmpty
               ? []
-              : districts_list.map((districts) {
-                  return DropdownMenuItem<String>(
-                    value: districts['id'].toString(),
-                    child: Text(districts['name_th']),
-                  );
-                }).toList(),
+              : districts_list.map(
+                  (districts) {
+                    return DropdownMenuItem<String>(
+                      value: districts['id'].toString(),
+                      child: Text(districts['name_th']),
+                    );
+                  },
+                ).toList(),
         ),
       );
 }

@@ -371,7 +371,7 @@ class _AddScoreState extends State<AddScore> {
 
   Future<Null> processImagePicker(ImageSource source) async {
     try {
-      var result = await ImagePicker().getImage(
+      var result = await ImagePicker().pickImage(
         source: source,
         maxWidth: 800,
         maxHeight: 800,
@@ -385,7 +385,7 @@ class _AddScoreState extends State<AddScore> {
 
   Future<Null> processImagePicker2(ImageSource source) async {
     try {
-      var result2 = await ImagePicker().getImage(
+      var result2 = await ImagePicker().pickImage(
         source: source,
         maxWidth: 800,
         maxHeight: 800,
@@ -2157,7 +2157,8 @@ class _AddScoreState extends State<AddScore> {
                       ]).show();
                 } else if (defaultTargetPlatform == TargetPlatform.android) {
                   print('Phone>>android');
-                  normalDialog(context, 'แจ้งเตือน', 'กรุณาให้คะแนนพนักงาน');
+                  // normalDialog(context, 'แจ้งเตือน', 'กรุณาให้คะแนนพนักงาน');
+                  nDialog(context, 'แจ้งเตือน', 'กรุณาให้คะแนนพนักงาน');
                 }
               }
             } else {
@@ -2174,7 +2175,9 @@ class _AddScoreState extends State<AddScore> {
                     ]).show();
               } else if (defaultTargetPlatform == TargetPlatform.android) {
                 print('Phone>>android');
-                normalDialog(
+                // normalDialog(
+                //     context, 'แจ้งเตือน', 'กรุณาเพิ่มใบเสร็จ / ภาพการติดตั้ง');
+                nDialog(
                     context, 'แจ้งเตือน', 'กรุณาเพิ่มใบเสร็จ / ภาพการติดตั้ง');
               }
             }

@@ -1,15 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/Tap.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
-import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/home/home.dart';
 import 'package:flutter_crud/models/mainproductmodel.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:flutter_crud/widget/skeleton_container.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:sizer/sizer.dart';
 
 class SearchProduct extends StatefulWidget {
   SearchProduct({Key? key}) : super(key: key);
@@ -25,6 +24,7 @@ class _SearchProductState extends State<SearchProduct> {
   TextEditingController input_search_text = TextEditingController();
   int offset = 0;
   bool isloading = true;
+  int currentDialogStyle = 0;
 
   //function รับข้อมูลสินค้า
   Future<void> _getproduct(keyword, offset) async {
@@ -83,7 +83,12 @@ class _SearchProductState extends State<SearchProduct> {
             controller: _scrollControll,
             child: Column(
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                if (defaultTargetPlatform == TargetPlatform.iOS) ...[
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.115),
+                ] else if (defaultTargetPlatform == TargetPlatform.android) ...[
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                ],
+                // SizedBox(height: 130),
                 title_product(),
                 if (dataproduct.isEmpty) ...[
                   empty_product()
@@ -125,8 +130,11 @@ class _SearchProductState extends State<SearchProduct> {
             children: [
               InkWell(
                 onTap: () async {
-                  await launch(
-                      "https://www.thaweeyont.com/detail_product?product_id=${dataproduct[index].productId}");
+                  final Uri urlproduct = Uri.parse(
+                      'https://www.thaweeyont.com/detail_product?product_id=${dataproduct[index].productId}');
+                  if (!await launchUrl(urlproduct)) {
+                    throw Exception('Could not launch $urlproduct');
+                  }
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
@@ -346,7 +354,10 @@ class title_product extends StatelessWidget {
             ),
             InkWell(
               onTap: () async {
-                await launch("https://www.thaweeyont.com");
+                final Uri url = Uri.parse('https://www.thaweeyont.com');
+                if (!await launchUrl(url)) {
+                  throw Exception('Could not launch $url');
+                }
               },
               child: Row(
                 children: [

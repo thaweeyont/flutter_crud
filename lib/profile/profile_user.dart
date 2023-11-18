@@ -17,11 +17,13 @@ import 'package:flutter_crud/authentication/register_user.dart';
 import 'package:flutter_crud/home/search_product.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:native_ios_dialog/native_ios_dialog.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class PROFILE extends StatefulWidget {
   PROFILE({Key? key}) : super(key: key);
@@ -37,20 +39,38 @@ class _PROFILEState extends State<PROFILE> {
   bool status_conn = true;
   bool? st_show = false;
   File? file; //ภาพprofile
-  var username, password, name, idcard, profile, status_advert, member;
-  var notification;
+  var username, password, name, idcard, profile, member, status_advert;
+  var notification, version_app;
   bool _switchValue = false;
   int currentDialogStyle = 0;
 
   @override
   void initState() {
+    super.initState();
     random_noti();
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     getprofile_user();
-    super.initState();
+    _initPackageInfo();
   }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      packageInfo = info;
+    });
+    version_app = packageInfo.version;
+  }
+
+  PackageInfo packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+    // installerStore: 'Unknown',
+  );
 
   Future<Null> random_noti() async {
     var rng = Random();
@@ -97,7 +117,7 @@ class _PROFILEState extends State<PROFILE> {
     });
   }
 
-  Future<Null> getprofile_user() async {
+  Future<void> getprofile_user() async {
     print('IN>>1');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -113,7 +133,6 @@ class _PROFILEState extends State<PROFILE> {
       // }else{
       //   textmember="";
       // }
-      print('user> $username');
     });
     if (name != null) {
       setState(() {
@@ -145,7 +164,7 @@ class _PROFILEState extends State<PROFILE> {
 
   Future<Null> processImagePicker(ImageSource source) async {
     try {
-      var result = await ImagePicker().getImage(
+      var result = await ImagePicker().pickImage(
         source: source,
         maxWidth: 800,
         maxHeight: 800,
@@ -182,7 +201,6 @@ class _PROFILEState extends State<PROFILE> {
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     double size = MediaQuery.of(context).size.width;
-
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -201,7 +219,7 @@ class _PROFILEState extends State<PROFILE> {
                         new Divider(),
                         edit_profile(name),
                         new Divider(),
-                        edit_address(name, idcard)
+                        edit_address(name, username),
                       ],
                     ),
                   ),
@@ -219,14 +237,13 @@ class _PROFILEState extends State<PROFILE> {
                         advert_button(),
                         if (st_show == true) ...[
                           new Divider(),
-                          // delete_account(idcard),
                           delete_account(context),
                         ],
                       ],
                     ),
                   ),
                   sizebox(),
-                  version(),
+                  version(version_app),
                   if (st_show == true) ...[
                     exit_ac(),
                   ],
@@ -264,7 +281,8 @@ class _PROFILEState extends State<PROFILE> {
               ]).show();
         } else if (defaultTargetPlatform == TargetPlatform.android) {
           print('Phone>>android');
-          Dialog_deleteAccount(context, idcard);
+          // Dialog_deleteAccount(context);
+          NdialogdeleteUser(context);
         }
       },
       child: Container(
@@ -415,31 +433,6 @@ class _PROFILEState extends State<PROFILE> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                // SizedBox(
-                //   height: MediaQuery.of(context).size.height * 0.04,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.end,
-                //     children: [
-                //       // _buildInputSearch(),
-                //       // _buildIconButton(
-                //       //   onPressed: () async {
-                //       //     await launch("https://www.thaweeyont.com/");
-                //       //   },
-                //       //   icon: Icons.shopping_cart,
-                //       //   notification: notification,
-                //       // ),
-                //       // _buildIconButton(
-                //       //   onPressed: () => Navigator.pushAndRemoveUntil(
-                //       //     context,
-                //       //     MaterialPageRoute(
-                //       //         builder: (context) => TapControl("1")),
-                //       //     (Route<dynamic> route) => false,
-                //       //   ),
-                //       //   icon: Icons.pin_drop_rounded,
-                //       // ),
-                //     ],
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Row(
@@ -456,8 +449,8 @@ class _PROFILEState extends State<PROFILE> {
                                   padding: profile == null || profile == ""
                                       ? file == null
                                           ? EdgeInsets.all(15)
-                                          : null
-                                      : null,
+                                          : EdgeInsets.all(5)
+                                      : EdgeInsets.all(5),
                                 ),
                                 onPressed: () async {
                                   if (username != null) {
@@ -496,53 +489,7 @@ class _PROFILEState extends State<PROFILE> {
                                                 0.08,
                                       ),
                               ),
-                              // FlatButton(
-                              //   color: Colors.white,
-                              //   shape: CircleBorder(),
-                              //   padding: profile == null || profile == ""
-                              //       ? file == null
-                              //           ? EdgeInsets.all(15)
-                              //           : null
-                              //       : null,
-                              //   onPressed: () async {
-                              //     if (idcard != null) {
-                              //       processImagePicker(ImageSource.gallery);
-                              //     } else {
-                              //       Navigator.push(context,
-                              //           CupertinoPageRoute(builder: (context) {
-                              //         return LOGIN();
-                              //       }));
-                              //     }
-                              //   },
-                              //   child: profile == null || profile == ""
-                              //       ? file == null
-                              //           ? Container(
-                              //               child: Icon(
-                              //               Icons.person_add_alt_rounded,
-                              //               size: MediaQuery.of(context)
-                              //                       .size
-                              //                       .width *
-                              //                   0.08,
-                              //               color: Colors.grey[400],
-                              //             ))
-                              //           : CircleAvatar(
-                              //               backgroundImage:
-                              //                   new FileImage(file!),
-                              //               radius: MediaQuery.of(context)
-                              //                       .size
-                              //                       .width *
-                              //                   0.08,
-                              //             )
-                              //       : CircleAvatar(
-                              //           backgroundImage: NetworkImage(
-                              //               "http://110.164.131.46/flutter_api/profile/$idcard/$profile"),
-                              //           radius:
-                              //               MediaQuery.of(context).size.width *
-                              //                   0.08,
-                              //         ),
-                              // ),
                               if (name != null && st_show == true) ...[
-                                // SizedBox(width: 10),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
@@ -562,10 +509,10 @@ class _PROFILEState extends State<PROFILE> {
                                         },
                                         child: Container(
                                           padding: EdgeInsets.only(
-                                              left: 15.0,
-                                              right: 15.0,
-                                              top: 2,
-                                              bottom: 2),
+                                              left: 10,
+                                              right: 5,
+                                              top: 0,
+                                              bottom: 0),
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(10),
@@ -594,12 +541,12 @@ class _PROFILEState extends State<PROFILE> {
                                               if (member == "normal") ...[
                                                 Text("Member Card",
                                                     style: MyConstant()
-                                                        .small_text(
+                                                        .very_small_text(
                                                             Colors.white)),
                                               ] else ...[
                                                 Text("$member Member",
                                                     style: MyConstant()
-                                                        .small_text(
+                                                        .very_small_text(
                                                             Colors.white)),
                                               ],
                                               SizedBox(
@@ -607,7 +554,7 @@ class _PROFILEState extends State<PROFILE> {
                                               ),
                                               Icon(
                                                 Icons.navigate_next_rounded,
-                                                size: 25,
+                                                size: 20,
                                                 color: Colors.grey[600],
                                               ),
                                             ],
@@ -634,12 +581,6 @@ class _PROFILEState extends State<PROFILE> {
                                         borderRadius: BorderRadius.circular(5),
                                       ),
                                       padding: EdgeInsets.all(8)),
-                                  // color: Colors.white,
-                                  // shape: RoundedRectangleBorder(
-                                  //   borderRadius: BorderRadius.circular(5),
-                                  //   // side: BorderSide(color: Colors.white),
-                                  // ),
-                                  // padding: EdgeInsets.all(8),
                                   onPressed: () {
                                     Navigator.push(context,
                                         CupertinoPageRoute(builder: (context) {
@@ -647,7 +588,6 @@ class _PROFILEState extends State<PROFILE> {
                                     }));
                                   },
                                   child: Container(
-                                    // color: Colors.white,
                                     child: Text(
                                       "เข้าสู่ระบบ",
                                       style: TextStyle(
@@ -707,9 +647,7 @@ class _PROFILEState extends State<PROFILE> {
       child: TextButton(
         onPressed: () {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
-            // showMenu();
             NativeIosDialog(
-                // title: "Confirm",
                 message: "คุณต้องการออกจากระบบนี้ใช่หรือไม่",
                 style: style,
                 actions: [
@@ -724,9 +662,9 @@ class _PROFILEState extends State<PROFILE> {
                         setState(() {
                           st_show = false;
                           name = null;
-                          // idcard = null;
                           username = null;
                           profile = null;
+                          file = null;
                         });
                       }),
                   NativeIosDialogAction(
@@ -738,7 +676,8 @@ class _PROFILEState extends State<PROFILE> {
                 ]).show();
           } else if (defaultTargetPlatform == TargetPlatform.android) {
             print('Phone>>android');
-            Dialog_exit(context);
+            // Dialog_exit(context);
+            Ndialogexit(context);
           }
         },
         child: Text(
@@ -776,7 +715,7 @@ class _PROFILEState extends State<PROFILE> {
     }
   }
 
-  Dialog_deleteAccount(BuildContext context, idcard) {
+  Dialog_deleteAccount(BuildContext context) {
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text(
@@ -852,6 +791,7 @@ class _PROFILEState extends State<PROFILE> {
           name = null;
           // idcard = null;
           profile = null;
+          file = null;
         });
         Navigator.pop(context);
       },
@@ -881,121 +821,85 @@ class _PROFILEState extends State<PROFILE> {
     );
   }
 
-  showMenu() {
-    showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20),
-            bottom: Radius.circular(20),
-          ),
-        ),
-        backgroundColor: Colors.white.withOpacity(0),
-        builder: (context) {
-          return SizedBox(
-            height: (37 * 6).toDouble(),
-            child: Column(
-              // mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.15,
-                          // padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "คุณต้องการออกจากระบบนี้ใช่หรือไม่",
-                                    style: TextStyle(
-                                        fontFamily: 'Prompt',
-                                        fontSize: 14,
-                                        color:
-                                            Color.fromARGB(255, 187, 187, 187)),
-                                  ),
-                                ],
-                              ),
-                              new Divider(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "ออกจากระบบ",
-                                    style: TextStyle(
-                                        fontFamily: 'Prompt',
-                                        fontSize: 18,
-                                        color: Colors.red),
-                                  ),
-                                ],
-                              ),
-                              new Divider(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "ยกเลิก",
-                                    style: TextStyle(
-                                        fontFamily: 'Prompt',
-                                        fontSize: 18,
-                                        color: Colors.blue),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                // Row(
-                //   children: [
-                //     Expanded(
-                //       child: Padding(
-                //         padding: const EdgeInsets.only(
-                //             top: 2, bottom: 8, left: 8, right: 8),
-                //         child: Container(
-                //           padding: EdgeInsets.all(10),
-                //           decoration: BoxDecoration(
-                //             borderRadius: BorderRadius.circular(10),
-                //             color: Colors.white,
-                //           ),
-                //           child: Column(
-                //             children: [
-                //               Row(
-                //                 mainAxisAlignment: MainAxisAlignment.center,
-                //                 children: [
-                //                   Text(
-                //                     "ยกเลิก",
-                //                     style: TextStyle(
-                //                         fontFamily: 'Prompt',
-                //                         fontSize: 18,
-                //                         color: Colors.blue),
-                //                   ),
-                //                 ],
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-              ],
+  Ndialogexit(BuildContext context) {
+    NDialog(
+      dialogStyle:
+          DialogStyle(titleDivider: true, contentPadding: EdgeInsets.all(10)),
+      title: Text(
+        "ออกจากระบบ",
+        textAlign: TextAlign.center,
+        style: MyConstant().title_text(Colors.black87),
+      ),
+      content: Text(
+        "คุณต้องการออกจากระบบนี้?",
+        textAlign: TextAlign.center,
+        style: MyConstant().normal_text(Color.fromARGB(255, 81, 81, 81)),
+      ),
+      actions: <Widget>[
+        TextButton(
+            child: Text(
+              "ยกเลิก",
+              style: MyConstant().textDialog(Colors.blueAccent),
             ),
-          );
-        });
+            onPressed: () => Navigator.pop(context)),
+        TextButton(
+            child: Text(
+              "ออกจากระบบ",
+              style: MyConstant().textDialog(Colors.redAccent),
+            ),
+            onPressed: () async {
+              SharedPreferences preferences =
+                  await SharedPreferences.getInstance();
+
+              preferences.clear();
+              preferences.setString('st_isf', "true");
+              setState(() {
+                st_show = false;
+                username = null;
+                name = null;
+                // idcard = null;
+                profile = null;
+                file = null;
+              });
+              Navigator.pop(context);
+            }),
+      ],
+    ).show(context);
+  }
+
+  NdialogdeleteUser(BuildContext context) {
+    NDialog(
+      dialogStyle:
+          DialogStyle(titleDivider: true, contentPadding: EdgeInsets.all(10)),
+      title: Text(
+        "ต้องการลบบัญชีนี้?",
+        textAlign: TextAlign.center,
+        style: MyConstant().title_text(Colors.black87),
+      ),
+      content: Text(
+        "หากลบบัญชีแล้วจะไม่สามารถกู้บัญชีคืนได้",
+        textAlign: TextAlign.center,
+        style: MyConstant().normal_text(Color.fromARGB(255, 81, 81, 81)),
+      ),
+      actions: <Widget>[
+        TextButton(
+            child: Text(
+              "ยกเลิก",
+              style: MyConstant().textDialog(Colors.blueAccent),
+            ),
+            onPressed: () => Navigator.pop(context)),
+        TextButton(
+            child: Text(
+              "ตกลง",
+              style: MyConstant().textDialog(Colors.redAccent),
+            ),
+            onPressed: () {
+              showProgressDialog(context);
+              delete_account_user(username);
+              Navigator.pop(context);
+            }),
+      ],
+    ).show(context);
   }
 
   Container advert_button() => Container(
@@ -1123,12 +1027,15 @@ class distconnect extends StatelessWidget {
 }
 
 class version extends StatelessWidget {
+  final String? appVersion;
+  version(this.appVersion);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15),
       child: Text(
-        "Thaweeyont v 2.1.20",
+        "Thaweeyont v ${appVersion}",
         style: TextStyle(
           fontFamily: 'Prompt',
           color: Colors.grey[400],
@@ -1143,8 +1050,14 @@ class call extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        launch("tel://053700353");
+      onTap: () async {
+        final Uri phone = Uri.parse('tel:053700353');
+        if (!await canLaunchUrl(phone)) {
+          print('telll');
+          await launchUrl(phone);
+        } else {
+          throw Exception('Could not launch $phone');
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10),
@@ -1187,59 +1100,6 @@ class call extends StatelessWidget {
     );
   }
 }
-
-// class delete_account extends StatelessWidget {
-//   final idcard;
-//   const delete_account(this.idcard);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return InkWell(
-//       onTap: () async {
-//         print(idcard);
-//         Dialog_deleteAccount(context, idcard);
-//       },
-//       child: Container(
-//         padding: EdgeInsets.symmetric(vertical: 10),
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Column(
-//               children: [
-//                 Row(
-//                   children: [
-//                     Icon(
-//                       Icons.no_accounts_rounded,
-//                       color: Colors.red,
-//                       size: 25,
-//                     ),
-//                     SizedBox(width: 5),
-//                     Text(
-//                       "ลบบัญชีผู้ใช้",
-//                       style: TextStyle(
-//                         fontSize: 16,
-//                         fontFamily: 'Prompt',
-//                       ),
-//                     ),
-//                   ],
-//                 )
-//               ],
-//             ),
-//             Column(
-//               children: [
-//                 Icon(
-//                   Icons.navigate_next_rounded,
-//                   size: 25,
-//                   color: Colors.grey[600],
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class privacy extends StatelessWidget {
   @override
@@ -1300,8 +1160,8 @@ class title_app extends StatelessWidget {
 }
 
 class edit_address extends StatelessWidget {
-  final name, idcard;
-  const edit_address(this.name, this.idcard);
+  final name, username;
+  const edit_address(this.name, this.username);
 
   @override
   Widget build(BuildContext context) {
@@ -1309,7 +1169,7 @@ class edit_address extends StatelessWidget {
       onTap: () {
         if (name != null) {
           Navigator.push(context, CupertinoPageRoute(builder: (context) {
-            return Address_user(idcard);
+            return Address_user(username);
           }));
         } else {
           Navigator.push(context, CupertinoPageRoute(builder: (context) {

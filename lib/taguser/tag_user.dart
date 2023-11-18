@@ -1,31 +1,19 @@
-// import 'dart:io';
-
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_crud/data_user.dart';
+import 'package:flutter_crud/authentication/login.dart';
 import 'package:flutter_crud/taguser/detail_user.dart';
 import 'package:flutter_crud/taguser/history_job.dart';
-// import 'package:flutter_crud/dialog/dialog.dart';
-// import 'package:flutter_crud/edit_user.dart';
-// import 'package:flutter_crud/history.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/models/jobinstallmodel.dart';
 import 'package:flutter_crud/models/jobmodel.dart';
-// import 'package:flutter_crud/models/product_detail.dart';
-// import 'package:flutter_crud/models/usermodel.dart';
 import 'package:flutter_crud/taguser/travel_to_install.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:flutter_crud/widget/coloricon.dart';
-import 'package:flutter_crud/widget/menu_tablet.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sizer/sizer.dart';
 
@@ -52,6 +40,18 @@ class _TagUserState extends State<TagUser> {
   bool check_f = false;
   bool check_i = false;
   String? token;
+  bool? st_show = false;
+  var username, password, name, profile, member;
+
+  @override
+  void initState() {
+    super.initState();
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    check_pre();
+    getprofile_user();
+  }
 
   //function select data
   void _getJob(String idcard) async {
@@ -153,8 +153,9 @@ class _TagUserState extends State<TagUser> {
   Future<Null> check_pre() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? id_card = preferences.getString('id_card');
+    String? username = preferences.getString('username');
     if (id_card != null && id_card.isNotEmpty) {
-      searchtag.text = id_card;
+      // searchtag.text = id_card;
       // showProgressDialog(context);
       _getJob_install(id_card);
       _getJob(id_card);
@@ -162,17 +163,17 @@ class _TagUserState extends State<TagUser> {
     }
   }
 
-  Future<Null> showProgressDialog(BuildContext context) async {
-    showDialog(
-      context: context,
-      builder: (context) => WillPopScope(
-        child: Center(child: CircularProgressIndicator()),
-        onWillPop: () async {
-          return false;
-        },
-      ),
-    );
-  }
+  // Future<Null> showProgressDialog(BuildContext context) async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => WillPopScope(
+  //       child: Center(child: CircularProgressIndicator()),
+  //       onWillPop: () async {
+  //         return false;
+  //       },
+  //     ),
+  //   );
+  // }
 
   //ไปหน้าถัดไปตามสถานะที่ต่างกัน
   void next_page(i) {
@@ -254,15 +255,6 @@ class _TagUserState extends State<TagUser> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    initConnectivity();
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-    check_pre();
-  }
-
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -299,60 +291,103 @@ class _TagUserState extends State<TagUser> {
     });
   }
 
+  Future<void> getprofile_user() async {
+    print('IN>>1');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      username = preferences.getString('username');
+      name = preferences.getString('name_user');
+      profile = preferences.getString('profile_user');
+      member = preferences.getString('member');
+
+      print('user> $username');
+      print('name> $name');
+      print('profile> $profile');
+      print('member> $member');
+    });
+    if (username != null && name != null) {
+      print('check_login1>>$name');
+      setState(() {
+        st_show = true;
+      });
+      print('st_show>>$st_show');
+    } else {
+      print('check_login2>>$name');
+      setState(() {
+        st_show = false;
+      });
+      print('st_show>>$st_show');
+
+      Navigator.push(context, CupertinoPageRoute(builder: (context) {
+        return LOGIN();
+      }));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     double size = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    return Sizer(builder: (context, orientation, deviceType) {
-      return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.grey[50],
-        body: status_conn == false
-            ? distconnect(size)
-            : RefreshIndicator(
-                strokeWidth: 2.0,
-                edgeOffset: 0.10,
-                displacement: 10,
-                backgroundColor: Colors.white,
-                color: Color.fromRGBO(230, 185, 128, 1),
-                onRefresh: () async {
-                  check_pre();
-                },
-                child: Column(
-                  children: [
-                    search_group(),
-                    history_button(size),
-                    if (check_f == false && check_i == false) ...[
-                      no_data(size)
-                    ] else ...[
-                      SingleChildScrollView(
-                        child: Container(
-                          child: Column(
-                            children: [
-                              // Text("กำลังมาติดตั้ง"),
-                              if (_data_install.isNotEmpty) ...[
-                                form_status_install(size),
-                                // Text("1"),
-                              ],
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: Colors.grey[50],
+          body: status_conn == false
+              ? distconnect(size)
+              : st_show == false
+                  ? null
+                  : RefreshIndicator(
+                      strokeWidth: 2.0,
+                      edgeOffset: 0.10,
+                      displacement: 10,
+                      backgroundColor: Colors.white,
+                      color: Color.fromRGBO(230, 185, 128, 1),
+                      onRefresh: () async {
+                        check_pre();
+                      },
+                      child: GestureDetector(
+                        onTap: () =>
+                            FocusScope.of(context).requestFocus(FocusNode()),
+                        behavior: HitTestBehavior.opaque,
+                        child: Column(
+                          children: [
+                            search_group(),
+                            history_button(size),
+                            if (check_f == false && check_i == false) ...[
+                              no_data(size)
+                            ] else ...[
+                              SingleChildScrollView(
+                                child: Container(
+                                  child: Column(
+                                    children: [
+                                      // Text("กำลังมาติดตั้ง"),
+                                      if (_data_install.isNotEmpty) ...[
+                                        form_status_install(size),
+                                        // Text("1"),
+                                      ],
 
-                              // Text("รอดำเนินการ"),
-                              if (datajob.isNotEmpty) ...[
-                                form_status_first(size),
-                                // show(size),
-                                // Text("2"),
-                              ],
+                                      // Text("รอดำเนินการ"),
+                                      if (datajob.isNotEmpty) ...[
+                                        form_status_first(size),
+                                        // show(size),
+                                        // Text("2"),
+                                      ],
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
-                          ),
+                          ],
+                          // ],
                         ),
                       ),
-                    ],
-                  ],
-                  // ],
-                )),
-      );
-    });
+                    ),
+        );
+      },
+    );
   }
 
   _buildInputSearch() {
@@ -381,7 +416,7 @@ class _TagUserState extends State<TagUser> {
           isDense: true,
           enabledBorder: border,
           focusedBorder: border,
-          hintText: "เลขบัตรประจำตัวประชาชน",
+          hintText: "เลขบัตรประชาชน",
           hintStyle: TextStyle(
             fontSize: 16,
             color: Colors.red,

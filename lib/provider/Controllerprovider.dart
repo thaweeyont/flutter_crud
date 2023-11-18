@@ -96,7 +96,7 @@ class ControllerProvider with ChangeNotifier {
                               ),
                               child: Icon(
                                 Icons.close,
-                                size: 20,
+                                size: 15,
                                 color: Colors.red[700],
                               ),
                             ),

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
-import 'package:flutter_crud/widget/menu_tablet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
@@ -159,8 +158,18 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                           ),
                           InkWell(
                             onTap: () async {
-                              await launch("fb://page/150711851621535",
-                                  forceWebView: false, forceSafariVC: false);
+                              // await launch("fb://page/150711851621535",
+                              //     forceWebView: false, forceSafariVC: false);
+                              final Uri url =
+                                  Uri.parse('fb://page/150711851621535');
+                              final Uri url2 = Uri.parse(
+                                  'https://www.facebook.com/thaweeyont');
+
+                              if (await canLaunchUrl(url)) {
+                                await launchUrl(url);
+                              } else {
+                                await launchUrl(url2);
+                              }
                             },
                             child: Row(children: [
                               Image.asset(
@@ -181,8 +190,14 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                           ),
                           InkWell(
                             onTap: () async {
-                              await launch("https://bit.ly/38TNyNa",
-                                  forceWebView: false, forceSafariVC: false);
+                              // await launch("https://bit.ly/38TNyNa",
+                              //     forceWebView: false, forceSafariVC: false);
+
+                              final Uri urlline = Uri.parse(
+                                  'https://page.line.me/?accountId=thy0471j');
+                              if (!await launchUrl(urlline)) {
+                                throw Exception('Could not launch $urlline');
+                              }
                             },
                             child: Row(
                               children: [
@@ -204,8 +219,13 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                             height: 20,
                           ),
                           InkWell(
-                            onTap: () {
-                              launch("tel://053700353");
+                            onTap: () async {
+                              final Uri phone = Uri.parse('tel:053700353');
+                              if (!await canLaunchUrl(phone)) {
+                                await launchUrl(phone);
+                              } else {
+                                throw Exception('Could not launch $phone');
+                              }
                             },
                             child: Row(
                               children: [
@@ -227,8 +247,13 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                             height: 20,
                           ),
                           InkWell(
-                            onTap: () {
-                              launch("tel://0893200000");
+                            onTap: () async {
+                              final Uri tel = Uri.parse('tel:0893200000');
+                              if (!await canLaunchUrl(tel)) {
+                                await launchUrl(tel);
+                              } else {
+                                throw Exception('Could not launch $tel');
+                              }
                             },
                             child: Row(
                               children: [
@@ -360,6 +385,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                       addContact();
                                       contactDialog(context, 'ส่งคำแนะนำ',
                                           "ขอบคุณที่ให้คำแนะนำ");
+                                      detail.clear();
                                     }
                                   });
                                 }

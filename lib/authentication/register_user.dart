@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_crud/models/login_usermodal.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:nextflow_thai_personal_id/nextflow_thai_personal_id.dart';
+// import 'package:nextflow_thai_personal_id/nextflow_thai_personal_id.dart';
 
 import '../privacy/Privacy.dart';
 import 'package:native_ios_dialog/native_ios_dialog.dart';
@@ -44,8 +45,8 @@ class _RegisterState extends State<Register> {
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController address = TextEditingController();
-  ThaiIdValidator thaiIdValidator = ThaiIdValidator(
-      errorMessage: 'เลขประจำตัวไม่ถูกต้องกรุณาตรวจสอบอีกครั้ง');
+  // ThaiIdValidator thaiIdValidator = ThaiIdValidator(
+  //     errorMessage: 'เลขประจำตัวไม่ถูกต้องกรุณาตรวจสอบอีกครั้ง');
 
   @override
   void initState() {
@@ -93,13 +94,11 @@ class _RegisterState extends State<Register> {
       preferences.setString(
           'districts_user', selectedValue_districts.toString());
       preferences.setString('member', "normal");
+      preferences.setString('profile_user', "");
       preferences.setString('status_advert', "true");
 
       if (user_name != "" && pass_word != "") {
         update_token(token!);
-        // Navigator.push(context, CupertinoPageRoute(builder: (context) {
-        //   return LOGIN();
-        // }));
       }
     } else {
       print("ไม่สำเร็จ");
@@ -173,8 +172,9 @@ class _RegisterState extends State<Register> {
                 ]).show();
           } else if (defaultTargetPlatform == TargetPlatform.android) {
             print('Phone>>android');
-            normalDialog(
-                context, 'แจ้งเตือน', "ข้อมูลนี้ถูกใช้ลงทะเบียนไปแล้ว");
+            // normalDialog(
+            //     context, 'แจ้งเตือน', "ข้อมูลนี้ถูกใช้ลงทะเบียนไปแล้ว");
+            nDialog(context, 'แจ้งเตือน', 'ข้อมูลนี้ถูกใช้ลงทะเบียนไปแล้ว');
           }
         } else if (respose.body == "2") {
           print('ok->3');
@@ -358,7 +358,7 @@ class _RegisterState extends State<Register> {
                 maxLength: 13,
                 controller: idcard,
                 keyboardType: TextInputType.number,
-                validator: thaiIdValidator.validate,
+                // validator: thaiIdValidator.validate,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(4),
                   isDense: true,
@@ -575,8 +575,6 @@ class _RegisterState extends State<Register> {
           ),
           padding: EdgeInsets.all(8),
         ),
-        // color: Colors.red,
-
         onPressed: () {
           print('submit');
           final NativeIosDialogStyle style = currentDialogStyle == 0
@@ -584,9 +582,50 @@ class _RegisterState extends State<Register> {
               : NativeIosDialogStyle.actionSheet;
           if (_formKey.currentState!.validate()) {
             if (username.text.isNotEmpty && password.text.isNotEmpty) {
+              String pattern_up = r'^[a-zA-Z0-9]+$';
+              RegExp regExp_up = new RegExp(pattern_up);
               String pattern = r'(^(?:[+0]9)?[0-9]{10}$)';
               RegExp regExp = new RegExp(pattern);
-              if (!regExp.hasMatch(phone.text)) {
+              if (!regExp_up.hasMatch(username.text)) {
+                if (defaultTargetPlatform == TargetPlatform.iOS) {
+                  NativeIosDialog(
+                      title: "แจ้งเตือน",
+                      message: "ชื่อผู้ใช้ต้องมีตัว A-Z,a-z,0-9 เท่านั้น",
+                      style: style,
+                      actions: [
+                        NativeIosDialogAction(
+                            text: "ตกลง",
+                            style: NativeIosDialogActionStyle.defaultStyle,
+                            onPressed: () {}),
+                      ]).show();
+                } else if (defaultTargetPlatform == TargetPlatform.android) {
+                  print('Phone>>android');
+                  // normalDialog(context, 'แจ้งเตือน',
+                  //     "ชื่อผู้ใช้ต้องมีตัว A-Z,a-z,0-9 เท่านั้น");
+                  nDialog(context, 'แจ้งเตือน',
+                      'ชื่อผู้ใช้ต้องมีตัว A-Z,a-z,0-9 เท่านั้น');
+                }
+              } else if (!regExp_up.hasMatch(password.text)) {
+                if (defaultTargetPlatform == TargetPlatform.iOS) {
+                  NativeIosDialog(
+                      title: "แจ้งเตือน",
+                      message: "รหัสผ่านต้องมีตัว A-Z,a-z,0-9 เท่านั้น",
+                      style: style,
+                      actions: [
+                        NativeIosDialogAction(
+                            text: "ตกลง",
+                            style: NativeIosDialogActionStyle.defaultStyle,
+                            onPressed: () {}),
+                      ]).show();
+                } else if (defaultTargetPlatform == TargetPlatform.android) {
+                  print('Phone>>android');
+                  // normalDialog(context, 'แจ้งเตือน',
+                  //     "รหัสผ่านต้องมีตัว A-Z,a-z,0-9 เท่านั้น");
+                  nDialog(context, 'แจ้งเตือน',
+                      'ชื่อผู้ใช้ต้องมีตัว A-Z,a-z,0-9 เท่านั้น');
+                }
+              } else if (!regExp.hasMatch(phone.text)) {
+                print('You know1>>${phone.text.length}');
                 if (defaultTargetPlatform == TargetPlatform.iOS) {
                   NativeIosDialog(
                       title: "แจ้งเตือน",
@@ -600,10 +639,11 @@ class _RegisterState extends State<Register> {
                       ]).show();
                 } else if (defaultTargetPlatform == TargetPlatform.android) {
                   print('Phone>>android');
-                  normalDialog(context, 'แจ้งเตือน', "เบอร์โทรศัพท์ไม่ถูกต้อง");
+                  // normalDialog(context, 'แจ้งเตือน', "เบอร์โทรศัพท์ไม่ถูกต้อง");
+                  nDialog(context, 'แจ้งเตือน', 'เบอร์โทรศัพท์ไม่ถูกต้อง');
                 }
               } else {
-                print('ok->1');
+                print('You know2>>${phone.text.length}');
                 if (selectedValue_provinces != null &&
                     selectedValue_amphures != null &&
                     selectedValue_districts != null) {
@@ -630,8 +670,9 @@ class _RegisterState extends State<Register> {
                         ]).show();
                   } else if (defaultTargetPlatform == TargetPlatform.android) {
                     print('Phone>>android');
-                    normalDialog(
-                        context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                    // normalDialog(
+                    //     context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                    nDialog(context, 'แจ้งเตือน', 'กรุณาเพิ่มข้อมูลให้ครบถ้วน');
                     setState(() {
                       show_validation = true;
                     });
@@ -652,8 +693,10 @@ class _RegisterState extends State<Register> {
                     ]).show();
               } else if (defaultTargetPlatform == TargetPlatform.android) {
                 print('Phone>>android');
-                normalDialog(
-                    context, 'แจ้งเตือน', "กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน");
+                // normalDialog(
+                //     context, 'แจ้งเตือน', "กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน");
+                nDialog(
+                    context, 'แจ้งเตือน', 'กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน');
               }
             }
           }
@@ -691,6 +734,7 @@ class _RegisterState extends State<Register> {
           ),
           iconSize: 24,
           elevation: 16,
+          isExpanded: true,
           underline: SizedBox(),
           onChanged: (String? newValue) {
             if (newValue != null) {
@@ -733,7 +777,7 @@ class _RegisterState extends State<Register> {
           //     Icons.arrow_downward),
           iconSize: 24,
           elevation: 16,
-
+          isExpanded: true,
           underline: SizedBox(),
           onChanged: (String? newValue) {
             if (newValue != null) {
@@ -776,7 +820,7 @@ class _RegisterState extends State<Register> {
           //     Icons.arrow_downward),
           iconSize: 24,
           elevation: 16,
-
+          isExpanded: true,
           underline: SizedBox(),
           onChanged: (String? newValue) {
             if (newValue != null) {

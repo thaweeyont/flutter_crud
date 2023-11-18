@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,13 +7,12 @@ import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:sizer/sizer.dart';
 import 'package:native_ios_dialog/native_ios_dialog.dart';
 
 class Submit_add_address extends StatefulWidget {
   final double lat, lng;
-  final String idcard;
-  Submit_add_address(this.lat, this.lng, this.idcard);
+  final String username;
+  Submit_add_address(this.lat, this.lng, this.username);
 
   @override
   _Submit_add_addressState createState() => _Submit_add_addressState();
@@ -37,15 +35,16 @@ class _Submit_add_addressState extends State<Submit_add_address> {
   void initState() {
     super.initState();
     get_provinces();
+    print('username>${widget.username}');
   }
 
   //เรียกใช้ api เพิ่มข้อมูล
   Future add_address() async {
-    var uri =
-        Uri.parse("http://110.164.131.46/flutter_api/api_user/add_address.php");
+    var uri = Uri.parse(
+        "http://110.164.131.46/flutter_api/api_user/add_address_new.php");
     var request = new http.MultipartRequest("POST", uri);
 
-    request.fields['idcard'] = widget.idcard;
+    request.fields['username'] = widget.username.toString();
     request.fields['name'] = text_name.text;
     request.fields['address'] = text_address.text;
     request.fields['lat'] = widget.lat.toString();
@@ -333,8 +332,9 @@ class _Submit_add_addressState extends State<Submit_add_address> {
                 setState(() {
                   show_validation = true;
                 });
-                normalDialog(
-                    context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                // normalDialog(
+                //     context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                nDialog(context, 'แจ้งเตือน', 'กรุณาเพิ่มข้อมูลให้ครบถ้วน');
               }
             }
           }

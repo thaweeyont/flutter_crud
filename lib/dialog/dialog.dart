@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:sizer/sizer.dart';
-import 'package:flutter_crud/profile/profile_user.dart';
-import 'package:http/http.dart' as http;
+import 'package:ndialog/ndialog.dart';
 
 Future<Null> normalDialog(
     BuildContext context, String title, String message) async {
@@ -46,10 +44,37 @@ Future<Null> normalDialog(
         ),
       ],
     ),
-    animationType: DialogTransitionType.fadeScale,
+    // animationType: DialogTransitionType.fadeScale,
     curve: Curves.fastOutSlowIn,
     duration: Duration(milliseconds: 800),
   );
+}
+
+Future<void> nDialog(BuildContext context, title, message) {
+  return NDialog(
+    dialogStyle:
+        DialogStyle(titleDivider: true, contentPadding: EdgeInsets.all(10)),
+    title: Text(
+      title,
+      textAlign: TextAlign.center,
+      style: MyConstant().title_text(Colors.black87),
+    ),
+    content: Text(
+      message,
+      textAlign: TextAlign.center,
+      style: MyConstant().normal_text(Color.fromARGB(255, 97, 97, 97)),
+    ),
+    actions: <Widget>[
+      TextButton(
+          child: Text(
+            "ตกลง",
+            style: MyConstant().textDialog(Colors.blueAccent),
+          ),
+          onPressed: () => Navigator.pop(context)),
+      // TextButton(
+      //     child: Text("Close"), onPressed: () => Navigator.pop(context)),
+    ],
+  ).show(context);
 }
 
 Future<Null> successDialog(

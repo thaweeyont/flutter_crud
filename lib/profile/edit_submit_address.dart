@@ -7,7 +7,6 @@ import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:sizer/sizer.dart';
 import 'package:native_ios_dialog/native_ios_dialog.dart';
 
 class Edit_submit_address extends StatefulWidget {
@@ -31,10 +30,10 @@ class _Edit_submit_addressState extends State<Edit_submit_address> {
   List districts_list = [];
   bool show_validation = false;
   int currentDialogStyle = 0;
+  var username, password, name, idcard, profile, member, status_advert;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     set_text();
   }
@@ -56,7 +55,6 @@ class _Edit_submit_addressState extends State<Edit_submit_address> {
 
     var response = await request.send();
     if (response.statusCode == 200) {
-      // Navigator.pop(context);
       Navigator.pop(context);
     } else {
       print("ไม่สำเร็จ");
@@ -142,7 +140,7 @@ class _Edit_submit_addressState extends State<Edit_submit_address> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    name(size),
+                    nameaddress(size),
                     provinces(),
                     amphures(),
                     districts(),
@@ -227,7 +225,7 @@ class _Edit_submit_addressState extends State<Edit_submit_address> {
     );
   }
 
-  Widget name(size) => Container(
+  Widget nameaddress(size) => Container(
         child: Column(
           children: [
             Padding(
@@ -325,6 +323,7 @@ class _Edit_submit_addressState extends State<Edit_submit_address> {
             if (selectedValue_provinces != null &&
                 selectedValue_amphures != null &&
                 selectedValue_districts != null) {
+              // showProgressDialog(context);
               edit_address();
             } else {
               if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -346,8 +345,9 @@ class _Edit_submit_addressState extends State<Edit_submit_address> {
                 setState(() {
                   show_validation = true;
                 });
-                normalDialog(
-                    context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                // normalDialog(
+                //     context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
+                nDialog(context, 'แจ้งเตือน', 'กรุณาเพิ่มข้อมูลให้ครบถ้วน');
               }
             }
           }

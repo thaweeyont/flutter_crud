@@ -62,15 +62,17 @@ dependencies:
   geolocator: ^7.2.0+1
   google_maps_flutter: ^2.0.6
   native_ios_dialog: ^0.2.0
+  package_info_plus: ^3.0.1
+  ndialog: ^4.3.1
   # flutter_launcher_icons: ^0.9.0
 
 # flutter_icons:
   # android: true
   # image_path: "images/logo_app.png"
   
-  http:
-  flutter_local_notifications:
-  url_launcher: ^6.0.6  
+  http: ^0.13.5
+  flutter_local_notifications: ^5.0.0
+  url_launcher: ^6.1.11
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -8,7 +8,6 @@ import 'package:flutter_crud/provider/producthotprovider.dart';
 import 'package:flutter_crud/provider/productprovider.dart';
 import 'package:flutter_crud/provider/promotionprovider.dart';
 import 'package:flutter_crud/responsive.dart';
-import 'package:flutter_crud/tablet/home_tablet.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 

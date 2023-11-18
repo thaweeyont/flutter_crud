@@ -15,6 +15,7 @@ class AddressUsermodel {
   AddressUsermodel({
     this.idUserAddress,
     this.idCardUser,
+    this.username,
     this.nameUserAddress,
     this.lat,
     this.lng,
@@ -42,6 +43,7 @@ class AddressUsermodel {
 
   String? idUserAddress;
   String? idCardUser;
+  String? username;
   String? nameUserAddress;
   String? lat;
   String? lng;
@@ -71,6 +73,7 @@ class AddressUsermodel {
         idUserAddress:
             json["id_user_address"] == null ? null : json["id_user_address"],
         idCardUser: json["id_card_user"] == null ? null : json["id_card_user"],
+        username: json["user_name"] == null ? null : json["user_name"],
         nameUserAddress: json["name_user_address"] == null
             ? null
             : json["name_user_address"],
@@ -108,6 +111,7 @@ class AddressUsermodel {
   Map<String, dynamic> toJson() => {
         "id_user_address": idUserAddress == null ? null : idUserAddress,
         "id_card_user": idCardUser == null ? null : idCardUser,
+        "user_name": username == null ? null : username,
         "name_user_address": nameUserAddress == null ? null : nameUserAddress,
         "lat": lat == null ? null : lat,
         "lng": lng == null ? null : lng,

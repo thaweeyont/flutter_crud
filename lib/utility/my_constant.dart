@@ -36,6 +36,12 @@ class MyConstant {
         fontFamily: 'Prompt',
       );
 
+  TextStyle very_small_text(Color color) => TextStyle(
+        fontSize: 12,
+        color: color,
+        fontFamily: 'Prompt',
+      );
+
   TextStyle title_text(Color color) => TextStyle(
         fontSize: 18,
         color: color,
@@ -47,6 +53,12 @@ class MyConstant {
         fontSize: 16,
         color: color,
         fontWeight: FontWeight.bold,
+        fontFamily: 'Prompt',
+      );
+
+  TextStyle textDialog(Color color) => TextStyle(
+        fontSize: 15,
+        color: color,
         fontFamily: 'Prompt',
       );
 

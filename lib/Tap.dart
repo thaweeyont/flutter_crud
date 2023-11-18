@@ -5,8 +5,6 @@ import 'package:flutter_crud/home/home.dart';
 import 'package:flutter_crud/profile/profile_user.dart';
 import 'package:flutter_crud/taguser/tag_user.dart';
 
-// import 'package:custom_navigator/custom_navigator.dart';
-
 class TapControl extends StatefulWidget {
   final index;
   TapControl(this.index);
@@ -17,6 +15,7 @@ class TapControl extends StatefulWidget {
 
 class _TapControlState extends State<TapControl> {
   bool navBarMode = true;
+
   void check_index() {
     var index_page = widget.index;
     switch (index_page) {
@@ -45,7 +44,6 @@ class _TapControlState extends State<TapControl> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     check_index();
   }
