@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:native_ios_dialog/native_ios_dialog.dart';
 
@@ -179,38 +179,38 @@ class _Submit_add_addressState extends State<Submit_add_address> {
     );
   }
 
-  Widget showmap() => GoogleMap(
-        compassEnabled: false,
-        mapType: MapType.normal,
-        tiltGesturesEnabled: false,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(widget.lat, widget.lng),
-          zoom: 17,
-        ),
-        onMapCreated: (controller) {},
-        zoomControlsEnabled: false,
-        myLocationButtonEnabled: true,
-        // myLocationEnabled: true,
-        markers: <Marker>[mark()].toSet(),
-        onTap: (argument) {
-          // setState(() {
-          //   n_lat = argument.latitude;
-          //   n_lng = argument.longitude;
-          // });
-        },
-      );
+  // Widget showmap() => GoogleMap(
+  //       compassEnabled: false,
+  //       mapType: MapType.normal,
+  //       tiltGesturesEnabled: false,
+  //       initialCameraPosition: CameraPosition(
+  //         target: LatLng(widget.lat, widget.lng),
+  //         zoom: 17,
+  //       ),
+  //       onMapCreated: (controller) {},
+  //       zoomControlsEnabled: false,
+  //       myLocationButtonEnabled: true,
+  //       // myLocationEnabled: true,
+  //       markers: <Marker>[mark()].toSet(),
+  //       onTap: (argument) {
+  //         // setState(() {
+  //         //   n_lat = argument.latitude;
+  //         //   n_lng = argument.longitude;
+  //         // });
+  //       },
+  //     );
 
-  Marker mark() {
-    return Marker(
-      markerId: MarkerId('id'),
-      position: LatLng(widget.lat, widget.lng),
-      // icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
-      infoWindow: InfoWindow(
-        title: 'สถานที่ติดตั้ง',
-        // snippet: 'Lat = $lat , lng = $lng'
-      ),
-    );
-  }
+  // Marker mark() {
+  //   return Marker(
+  //     markerId: MarkerId('id'),
+  //     position: LatLng(widget.lat, widget.lng),
+  //     // icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
+  //     infoWindow: InfoWindow(
+  //       title: 'สถานที่ติดตั้ง',
+  //       // snippet: 'Lat = $lat , lng = $lng'
+  //     ),
+  //   );
+  // }
 
   Widget name(size) => Container(
         child: Column(

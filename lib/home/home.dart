@@ -4,11 +4,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
-import 'package:flutter_crud/models/advertmodel.dart';
 import 'package:flutter_crud/models/mainproductmodel.dart';
-import 'package:flutter_crud/models/promotionmodel.dart';
-import 'package:flutter_crud/profile/profile_user.dart';
 import 'package:flutter_crud/provider/Controllerprovider.dart';
 import 'package:flutter_crud/provider/producthotprovider.dart';
 import 'package:flutter_crud/provider/productprovider.dart';
@@ -20,10 +16,8 @@ import 'package:flutter_crud/widget/main_menu.dart';
 import 'package:flutter_crud/widget/skeleton_container.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -87,7 +81,7 @@ class _HomeState extends State<Home> {
                   children: [
                     BanerS(),
                     MainMenu(),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     MyConstant().space_box(15),
                     Promotion_data(),
                     title_product_hot(),
@@ -124,143 +118,151 @@ class Promotion_data extends StatelessWidget {
       var item = controllerprovider.detailpromotion;
       if (items.isEmpty) {
         return Container();
-        // return buildSkeleton_promotion(context: context);
       } else {
-        return Container(
-          child: GridView.builder(
-              padding: EdgeInsets.all(0),
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                childAspectRatio: 0.95,
-              ),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return SingleChildScrollView(
+        return GridView.builder(
+          padding: EdgeInsets.all(0),
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 1,
+            childAspectRatio: 0.95,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                Container(
+                  // color: Color.fromARGB(255, 197, 16, 16),
+                  padding: EdgeInsets.all(8.0),
                   child: Column(
                     children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          items[index].ribbonPromotion.toString().isNotEmpty
+                              ? Image.memory(
+                                  convertBase64Image(
+                                      items[index].ribbonPromotion.toString()),
+                                  gaplessPlayback: true,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
+                                )
+                              : SizedBox(),
+                          date_time_st(context, items[index].startPromotion,
+                              items[index].endPromotion)
+                        ],
+                      ),
                       Container(
-                        color: Colors.white,
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
+                        // color: Colors.cyan,
+                        width: double.infinity,
+                        height: MediaQuery.of(context).size.width * 0.35,
+                        child: ClipRRect(
+                            child: Image.memory(
+                          convertBase64Image(
+                              items[index].labelPromotion.toString()),
+                          gaplessPlayback: true,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                        )
+                            //  CachedNetworkImage(
+                            //   fit: BoxFit.fill,
+                            //   imageUrl:
+                            //       "https://www.thaweeyont.com/img/banner/${items[index].labelPromotion}",
+                            //   placeholder: (context, url) {
+                            //     return Container(
+                            //       child: SkeletonContainer.square(
+                            //         width: double.infinity,
+                            //         height: double.infinity,
+                            //         radins: 0,
+                            //       ),
+                            //     );
+                            //   },
+                            //   errorWidget: (context, url, error) =>
+                            //       Icon(Icons.error),
+                            // ),
+                            ),
+                      ),
+                      Container(
+                        // color: Colors.deepPurple,
+                        height: MediaQuery.of(context).size.height * 0.25,
+                        child: GridView(
+                          scrollDirection: Axis.horizontal,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1,
+                            crossAxisSpacing: 5,
+                            childAspectRatio: 1.3,
+                          ),
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Image.memory(
-                                    convertBase64Image(items[index]
-                                        .ribbonPromotion
-                                        .toString()),
-                                    gaplessPlayback: true,
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.4,
-                                  ),
-                                ),
-                                date_time_st(
-                                    context,
-                                    items[index].startPromotion,
-                                    items[index].endPromotion)
-                              ],
-                            ),
-                            Container(
-                              width: double.infinity,
-                              height: MediaQuery.of(context).size.width * 0.32,
-                              // color: Colors.grey[300],
-                              child: ClipRRect(
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.fill,
-                                  imageUrl:
-                                      "https://www.thaweeyont.com/img/banner/${items[index].promotionBaner}",
-                                  placeholder: (context, url) {
-                                    return Container(
-                                      child: SkeletonContainer.square(
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                        radins: 0,
-                                      ),
-                                    );
-                                  },
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.25,
-                              child: GridView(
-                                scrollDirection: Axis.horizontal,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 1,
-                                  crossAxisSpacing: 5,
-                                  childAspectRatio: 1.3,
-                                ),
-                                children: [
-                                  for (var i = 0; i < item.length; i++)
-                                    if (item[i].idPromotion ==
-                                        items[index].idRunPromotion) ...[
-                                      Stack(
-                                        children: [
-                                          InkWell(
-                                            onTap: () async {
-                                              await launch(
-                                                  "https://www.thaweeyont.com/detail_product?product_id=${item[i].idProduct}");
-                                            },
-                                            child: Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 8, right: 10),
-                                              color: Colors.grey[200],
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
+                            for (var i = 0; i < item.length; i++)
+                              if (item[i].idPromotion ==
+                                  items[index].idRunPromotion) ...[
+                                Stack(
+                                  children: [
+                                    InkWell(
+                                      onTap: () async {
+                                        // print('test11');
+                                        // await launch(
+                                        //     "https://www.thaweeyont.com/detail_product?product_id=${item[i].idProduct}");
+
+                                        Uri url = Uri.parse(
+                                            'https://www.thaweeyont.com/detail_product?product_id=${item[i].idProduct}');
+
+                                        if (!await launcher.launchUrl(
+                                          url,
+                                          mode: launcher
+                                              .LaunchMode.externalApplication,
+                                        )) {
+                                          throw Exception(
+                                              'Could not launch $url');
+                                        }
+                                      },
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.only(top: 8, right: 10),
+                                        color:
+                                            Color.fromARGB(255, 238, 238, 238),
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              ClipRect(
+                                                child: Stack(
                                                   children: [
-                                                    ClipRect(
-                                                      // child: Banner(
-                                                      // message:
-                                                      //     "${items[index].namePromotion}",
-                                                      // location:
-                                                      //     BannerLocation.topEnd,
-                                                      // color: Colors.red,
-                                                      child: Stack(
-                                                        children: [
-                                                          CachedNetworkImage(
-                                                            imageUrl:
-                                                                "https://www.thaweeyont.com/${item[i].imgLocation}",
-                                                            placeholder:
-                                                                (context, url) {
-                                                              return Container(
-                                                                child:
-                                                                    SkeletonContainer
-                                                                        .square(
-                                                                  width: double
-                                                                      .infinity,
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .height *
-                                                                      0.20,
-                                                                  radins: 0,
-                                                                ),
-                                                              );
-                                                            },
-                                                            errorWidget:
-                                                                (context, url,
-                                                                        error) =>
-                                                                    Icon(Icons
-                                                                        .error),
+                                                    CachedNetworkImage(
+                                                      imageUrl:
+                                                          "https://www.thaweeyont.com/${item[i].imgLocation}",
+                                                      placeholder:
+                                                          (context, url) {
+                                                        return Container(
+                                                          child:
+                                                              SkeletonContainer
+                                                                  .square(
+                                                            width:
+                                                                double.infinity,
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                0.20,
+                                                            radins: 0,
                                                           ),
-                                                          Positioned(
-                                                            left: 0,
-                                                            bottom: 0,
-                                                            child: ClipPath(
-                                                              // clipper: MyClipper(),
-                                                              child:
-                                                                  Image.memory(
+                                                        );
+                                                      },
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Icon(Icons.error),
+                                                    ),
+                                                    Positioned(
+                                                      left: 0,
+                                                      bottom: 0,
+                                                      child: ClipPath(
+                                                        child: items[index]
+                                                                .ribbonPromotion
+                                                                .toString()
+                                                                .isNotEmpty
+                                                            ? Image.memory(
                                                                 convertBase64Image(items[
                                                                         index]
                                                                     .ribbonPromotion
@@ -272,86 +274,59 @@ class Promotion_data extends StatelessWidget {
                                                                         .size
                                                                         .width *
                                                                     0.2,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
+                                                              )
+                                                            : SizedBox(),
                                                       ),
                                                     ),
-                                                    // ),
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 2,
-                                                          horizontal: 4),
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: SizedBox(
-                                                              // height: 5,
-                                                              width: double
-                                                                  .infinity,
-                                                              child: Text(
-                                                                "${item[i].nameProduct}",
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 2,
+                                                        horizontal: 4),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: SizedBox(
+                                                        width: double.infinity,
+                                                        child: Text(
+                                                          "${item[i].nameProduct}",
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
                                                       ),
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 4,
-                                                              right: 2,
-                                                              bottom: 8),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 4,
+                                                    right: 2,
+                                                    bottom: 8),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Expanded(
                                                       child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
                                                         children: [
-                                                          Expanded(
-                                                            child: Row(
-                                                              children: [
-                                                                // Text(
-                                                                //   " \฿10000",
-                                                                //   style: TextStyle(
-                                                                //     color: Colors
-                                                                //         .black
-                                                                //         .withOpacity(
-                                                                //             0.5),
-                                                                //     fontSize: 14,
-                                                                //     fontWeight:
-                                                                //         FontWeight
-                                                                //             .bold,
-                                                                //     decoration:
-                                                                //         TextDecoration
-                                                                //             .lineThrough,
-                                                                //   ),
-                                                                // ),
-                                                                // SizedBox(width: 10),
-                                                                ClipPath(
-                                                                  clipper:
-                                                                      CuponClipper(),
-                                                                  child:
-                                                                      Container(
-                                                                    padding: EdgeInsets.only(
-                                                                        left:
-                                                                            10,
-                                                                        right:
-                                                                            10),
-                                                                    color: Colors
-                                                                        .yellow,
-                                                                    child:
-                                                                        hiddent_price(
-                                                                            item,
-                                                                            i),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                          ClipPath(
+                                                            clipper:
+                                                                CuponClipper(),
+                                                            child: Container(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      left: 10,
+                                                                      right:
+                                                                          10),
+                                                              color:
+                                                                  Colors.yellow,
+                                                              child:
+                                                                  hiddent_price(
+                                                                      item, i),
                                                             ),
                                                           ),
                                                         ],
@@ -360,61 +335,35 @@ class Promotion_data extends StatelessWidget {
                                                   ],
                                                 ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                          // Positioned(
-                                          //   right: 9.5,
-                                          //   top: 7.5,
-                                          //   child: ClipPath(
-                                          //     clipper: MyClipper(),
-                                          //     child: Container(
-                                          //       color: Colors.yellow,
-                                          //       padding: EdgeInsets.all(4),
-                                          //       child: Column(
-                                          //         children: [
-                                          //           Text(
-                                          //             "ลด",
-                                          //             style: MyConstant()
-                                          //                 .small_text(
-                                          //                     Colors.white),
-                                          //           ),
-                                          //           Text(
-                                          //             "❤",
-                                          //             style: MyConstant()
-                                          //                 .small_text(Colors.red),
-                                          //           ),
-                                          //           // show_per(index),
-                                          //         ],
-                                          //       ),
-                                          //     ),
-                                          //   ),
-                                          // ),
-                                        ],
+                                        ),
                                       ),
-                                    ],
-                                ],
-                              ),
-                            ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                           ],
                         ),
                       ),
-                      SizedBox(
-                        height: 15,
-                        child: Container(
-                          color: Colors.grey[200],
-                        ),
-                      )
                     ],
                   ),
-                );
-              }),
+                ),
+                SizedBox(
+                  height: 15,
+                  child: Container(
+                    color: Colors.grey[200],
+                  ),
+                )
+              ],
+            );
+          },
         );
       }
     });
   }
 
   Row date_time_st(context, items, itemslast) {
-    // DateFormat alldate = DateFormat("yyyy-MM-dd");
     String day = DateFormat('dd').format(items);
     String month = DateFormat('MM').format(items);
     String year = DateFormat('yyyy').format(items);
@@ -430,10 +379,6 @@ class Promotion_data extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Text(
-        //   "$day : $month : ${year_format[2]}${year_format[3]}",
-        //   style: TextStyle(fontSize: 14),
-        // ),
         Text(
           "$day/$month/${year_format[2]}${year_format[3]} ",
           style: TextStyle(fontSize: 13),
@@ -448,78 +393,6 @@ class Promotion_data extends StatelessWidget {
           size: MediaQuery.of(context).size.width * 0.05,
           color: Colors.red.shade400,
         ),
-        // Container(
-        //   width: MediaQuery.of(context).size.width * 0.06,
-        //   height: MediaQuery.of(context).size.width * 0.08,
-        //   decoration: BoxDecoration(
-        //     // color: Colors.red.shade400,
-        //     borderRadius: BorderRadius.all(Radius.circular(2) //
-        //         ),
-        //   ),
-        //   child: Center(
-        //     child: Row(
-        //       children: [
-        //         Text(
-        //           "$day : $month : ${year_format[2]}${year_format[3]}",
-        //           style: MyConstant().small_text(Colors.black),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        // Container(
-        //   width: MediaQuery.of(context).size.width * 0.06,
-        //   height: MediaQuery.of(context).size.width * 0.08,
-        //   decoration: BoxDecoration(
-        //     // color: Colors.red.shade400,
-        //     borderRadius: BorderRadius.all(Radius.circular(2) //
-        //         ),
-        //   ),
-        //   child: Center(
-        //     child: Text(
-        //       "$day",
-        //       style: MyConstant().small_text(Colors.black),
-        //     ),
-        //   ),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.only(left: 2.5, right: 2.5),
-        //   child: Text(":"),
-        // ),
-        // Container(
-        //   width: MediaQuery.of(context).size.width * 0.06,
-        //   height: MediaQuery.of(context).size.width * 0.08,
-        //   decoration: BoxDecoration(
-        //     // color: Colors.red.shade400,
-        //     borderRadius: BorderRadius.all(Radius.circular(2) //
-        //         ),
-        //   ),
-        //   child: Center(
-        //     child: Text(
-        //       "$month",
-        //       style: MyConstant().small_text(Colors.black),
-        //     ),
-        //   ),
-        // ),
-        // Padding(
-        //   padding: const EdgeInsets.only(left: 2.5, right: 2.5),
-        //   child: Text(":"),
-        // ),
-        // Container(
-        //   width: MediaQuery.of(context).size.width * 0.06,
-        //   height: MediaQuery.of(context).size.width * 0.08,
-        //   decoration: BoxDecoration(
-        //     // color: Colors.red.shade400,
-        //     borderRadius: BorderRadius.all(Radius.circular(2) //
-        //         ),
-        //   ),
-        //   child: Center(
-        //     child: Text(
-        //       "${year_format[2]}${year_format[3]}",
-        //       style: MyConstant().small_text(Colors.black),
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }
@@ -826,8 +699,17 @@ class list_product extends StatelessWidget {
           return Stack(children: [
             InkWell(
               onTap: () async {
-                await launch(
-                    "https://www.thaweeyont.com/detail_product?product_id=${items[index].productId}");
+                print('test4');
+                // await launch(
+                //     "https://www.thaweeyont.com/detail_product?product_id=${items[index].productId}");
+                Uri url = Uri.parse(
+                    'https://www.thaweeyont.com/detail_product?product_id=${items[index].productId}');
+                if (!await launcher.launchUrl(
+                  url,
+                  mode: launcher.LaunchMode.externalApplication,
+                )) {
+                  throw Exception('Could not launch $url');
+                }
               },
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
@@ -883,7 +765,6 @@ class list_product extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Row(
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   " \฿${items[index].optionPrice}",
@@ -903,29 +784,6 @@ class list_product extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                // Text(
-                                //   "ขายได้ ${items[index].productMostSale} ชิ้น",
-                                //   style: TextStyle(
-                                //     color: Colors.grey,
-                                //     fontSize: 12,
-                                //     // fontWeight: FontWeight.bold,
-                                //   ),
-                                // )
-                                // ClipPath(
-                                //   clipper: CuponClipper(),
-                                //   child: Container(
-                                //     padding: EdgeInsets.only(left: 10, right: 10),
-                                //     color: Colors.yellow,
-                                //     child: Text(
-                                //       "฿${items[index].promotionPrice}",
-                                //       style: TextStyle(
-                                //         color: Colors.red,
-                                //         fontSize: 16,
-                                //         fontWeight: FontWeight.bold,
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),
@@ -987,8 +845,6 @@ class data_product_hot extends StatelessWidget {
       } else {
         return list_product_hot(items: items);
       }
-
-      //
     });
   }
 }
@@ -1004,7 +860,7 @@ class list_product_hot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 0),
+      margin: EdgeInsets.only(top: 0, bottom: 6),
       height: MediaQuery.of(context).size.height * 0.27,
       child: GridView.builder(
         // physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
@@ -1021,8 +877,18 @@ class list_product_hot extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () async {
-                  await launch(
-                      "https://www.thaweeyont.com/detail_product?product_id=${items[index].productId}");
+                  print('test3');
+                  // await launch(
+                  //     "https://www.thaweeyont.com/detail_product?product_id=${items[index].productId}");
+                  Uri linkProductHot = Uri.parse(
+                      'https://www.thaweeyont.com/detail_product?product_id=${items[index].productId}');
+                  if (!await launcher.launchUrl(
+                    linkProductHot,
+                    mode: launcher.LaunchMode.externalApplication,
+                  )) {
+                    throw Exception('Could not launch $linkProductHot');
+                  }
+                  ;
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 4, vertical: 5),
@@ -1289,8 +1155,16 @@ class title_product_hot extends StatelessWidget {
             ),
             InkWell(
               onTap: () async {
-                await launch("https://www.thaweeyont.com/hotproduct");
-                // launchUrlString("https://www.thaweeyont.com/hotproduct");
+                print('test');
+                // await launch("https://www.thaweeyont.com/hotproduct");
+                Uri link = Uri.parse('https://www.thaweeyont.com/hotproduct');
+                if (!await launcher.launchUrl(
+                  link,
+                  mode: launcher.LaunchMode.externalApplication,
+                )) {
+                  throw Exception('Could not launch $link');
+                }
+                ;
               },
               child: Row(
                 children: [
@@ -1329,7 +1203,15 @@ class title_product extends StatelessWidget {
             ),
             InkWell(
               onTap: () async {
-                await launch("https://www.thaweeyont.com");
+                print('test2');
+                // await launch("https://www.thaweeyont.com");
+                Uri url = Uri.parse('https://www.thaweeyont.com');
+                if (!await launcher.launchUrl(
+                  url,
+                  mode: launcher.LaunchMode.externalApplication,
+                )) {
+                  throw Exception('Could not launch $url');
+                }
               },
               child: Row(
                 children: [

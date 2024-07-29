@@ -26,7 +26,6 @@ class Promotion with ChangeNotifier {
       if (respose.statusCode == 200) {
         // print(respose.body);
         datapromotion = promotionmodelFromJson(respose.body);
-
         getdetailpromotion();
       }
       notifyListeners();

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/profile/submit_address_user.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
 
 class Address_add extends StatefulWidget {
@@ -130,7 +130,8 @@ class _Address_addState extends State<Address_add> {
             : Stack(
                 children: [
                   Positioned.fill(
-                    child: showmap(),
+                    child: SizedBox(),
+                    // showmap(),
                   ),
                   next(size),
                   back(size),
@@ -139,38 +140,38 @@ class _Address_addState extends State<Address_add> {
   }
 
   //แสดงแผนที่
-  Widget showmap() => GoogleMap(
-        compassEnabled: false,
-        mapType: MapType.normal,
-        tiltGesturesEnabled: false,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(lat, lng),
-          zoom: 16,
-        ),
-        onMapCreated: (controller) {},
-        zoomControlsEnabled: false,
-        myLocationButtonEnabled: true,
-        myLocationEnabled: true,
-        markers: <Marker>[mark()].toSet(),
-        onTap: (argument) {
-          setState(() {
-            lat = argument.latitude;
-            lng = argument.longitude;
-          });
-        },
-      );
+  // Widget showmap() => GoogleMap(
+  //       compassEnabled: false,
+  //       mapType: MapType.normal,
+  //       tiltGesturesEnabled: false,
+  //       initialCameraPosition: CameraPosition(
+  //         target: LatLng(lat, lng),
+  //         zoom: 16,
+  //       ),
+  //       onMapCreated: (controller) {},
+  //       zoomControlsEnabled: false,
+  //       myLocationButtonEnabled: true,
+  //       myLocationEnabled: true,
+  //       markers: <Marker>[mark()].toSet(),
+  //       onTap: (argument) {
+  //         setState(() {
+  //           lat = argument.latitude;
+  //           lng = argument.longitude;
+  //         });
+  //       },
+  //     );
 
-  Marker mark() {
-    return Marker(
-      markerId: MarkerId('id'),
-      position: LatLng(lat, lng),
-      // icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
-      infoWindow: InfoWindow(
-        title: 'ที่อยู่คุณ',
-        // snippet: 'Lat = $lat , lng = $lng'
-      ),
-    );
-  }
+  // Marker mark() {
+  //   return Marker(
+  //     markerId: MarkerId('id'),
+  //     position: LatLng(lat, lng),
+  //     // icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
+  //     infoWindow: InfoWindow(
+  //       title: 'ที่อยู่คุณ',
+  //       // snippet: 'Lat = $lat , lng = $lng'
+  //     ),
+  //   );
+  // }
 
   Widget next(size) => Positioned(
         bottom: 7.h,

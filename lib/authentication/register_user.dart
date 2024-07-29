@@ -336,7 +336,7 @@ class _RegisterState extends State<Register> {
         "สมัคร",
         style: MyConstant().title_text(Colors.black),
       ),
-      elevation: 4,
+      elevation: 0,
       actions: [
         IconButton(
           onPressed: () {},

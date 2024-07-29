@@ -25,9 +25,7 @@ class TagUser extends StatefulWidget {
 }
 
 class _TagUserState extends State<TagUser> {
-  ConnectivityResult _connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool status_conn = true;
   //ประกาศตัวแปร
   TextEditingController searchtag = TextEditingController();
@@ -47,8 +45,6 @@ class _TagUserState extends State<TagUser> {
   void initState() {
     super.initState();
     initConnectivity();
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     check_pre();
     getprofile_user();
   }
@@ -259,7 +255,7 @@ class _TagUserState extends State<TagUser> {
     late ConnectivityResult result;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      result = await _connectivity.checkConnectivity();
+      result = (await _connectivity.checkConnectivity()) as ConnectivityResult;
     } on PlatformException catch (e) {
       print(e.toString());
       return;
@@ -286,13 +282,10 @@ class _TagUserState extends State<TagUser> {
         status_conn = true;
       });
     }
-    setState(() {
-      _connectionStatus = result;
-    });
+    setState(() {});
   }
 
   Future<void> getprofile_user() async {
-    print('IN>>1');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       username = preferences.getString('username');

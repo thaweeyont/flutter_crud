@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:http/http.dart' as http;
 
 class Contact extends StatefulWidget {
@@ -16,9 +16,7 @@ class Contact extends StatefulWidget {
 }
 
 class _ContactState extends State<Contact> with TickerProviderStateMixin {
-  ConnectivityResult _connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
-  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool status_conn = true;
   //validation
   final _formKey = GlobalKey<FormState>();
@@ -47,15 +45,13 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     initConnectivity();
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      result = await _connectivity.checkConnectivity();
+      result = (await _connectivity.checkConnectivity()) as ConnectivityResult;
     } on PlatformException catch (e) {
       print(e.toString());
       return;
@@ -81,9 +77,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
         status_conn = true;
       });
     }
-    setState(() {
-      _connectionStatus = result;
-    });
+    setState(() {});
   }
 
   @override
@@ -158,17 +152,20 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                           ),
                           InkWell(
                             onTap: () async {
-                              // await launch("fb://page/150711851621535",
-                              //     forceWebView: false, forceSafariVC: false);
-                              final Uri url =
-                                  Uri.parse('fb://page/150711851621535');
-                              final Uri url2 = Uri.parse(
+                              Uri url = Uri.parse('fb://page/150711851621535');
+                              Uri url2 = Uri.parse(
                                   'https://www.facebook.com/thaweeyont');
 
-                              if (await canLaunchUrl(url)) {
-                                await launchUrl(url);
+                              if (await launcher.canLaunchUrl(url)) {
+                                await launcher.launchUrl(
+                                  url,
+                                  mode: launcher.LaunchMode.externalApplication,
+                                );
                               } else {
-                                await launchUrl(url2);
+                                await launcher.launchUrl(
+                                  url2,
+                                  mode: launcher.LaunchMode.externalApplication,
+                                );
                               }
                             },
                             child: Row(children: [
@@ -190,12 +187,12 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                           ),
                           InkWell(
                             onTap: () async {
-                              // await launch("https://bit.ly/38TNyNa",
-                              //     forceWebView: false, forceSafariVC: false);
-
-                              final Uri urlline = Uri.parse(
+                              Uri urlline = Uri.parse(
                                   'https://page.line.me/?accountId=thy0471j');
-                              if (!await launchUrl(urlline)) {
+                              if (!await launcher.launchUrl(
+                                urlline,
+                                mode: launcher.LaunchMode.externalApplication,
+                              )) {
                                 throw Exception('Could not launch $urlline');
                               }
                             },
@@ -220,11 +217,9 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                           ),
                           InkWell(
                             onTap: () async {
-                              final Uri phone = Uri.parse('tel:053700353');
-                              if (!await canLaunchUrl(phone)) {
-                                await launchUrl(phone);
-                              } else {
-                                throw Exception('Could not launch $phone');
+                              Uri phone = Uri.parse('tel:053700353');
+                              if (!await launcher.launchUrl(phone)) {
+                                debugPrint('Could not launch $phone');
                               }
                             },
                             child: Row(
@@ -248,11 +243,9 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                           ),
                           InkWell(
                             onTap: () async {
-                              final Uri tel = Uri.parse('tel:0893200000');
-                              if (!await canLaunchUrl(tel)) {
-                                await launchUrl(tel);
-                              } else {
-                                throw Exception('Could not launch $tel');
+                              Uri tel = Uri.parse('tel:0893200000');
+                              if (!await launcher.launchUrl(tel)) {
+                                debugPrint('Could not launch $tel');
                               }
                             },
                             child: Row(
@@ -507,18 +500,21 @@ class appbar extends StatelessWidget {
         ),
         child: FlexibleSpaceBar(
           centerTitle: true,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "ช่วยเหลือ ",
-                style: MyConstant().bold_text(Colors.red.shade600),
-              ),
-              Icon(
-                Icons.contact_support_rounded,
-                color: Colors.red[700],
-              ),
-            ],
+          title: Padding(
+            padding: const EdgeInsets.only(right: 60.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "ช่วยเหลือ ",
+                  style: MyConstant().bold_text(Colors.red.shade600),
+                ),
+                Icon(
+                  Icons.contact_support_rounded,
+                  color: Colors.red[700],
+                ),
+              ],
+            ),
           ),
           background: Image.asset(
             "images/contactfilter.jpg",

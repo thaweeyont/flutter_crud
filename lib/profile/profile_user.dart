@@ -19,7 +19,7 @@ import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:native_ios_dialog/native_ios_dialog.dart';
@@ -33,9 +33,7 @@ class PROFILE extends StatefulWidget {
 }
 
 class _PROFILEState extends State<PROFILE> {
-  ConnectivityResult _connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool status_conn = true;
   bool? st_show = false;
   File? file; //ภาพprofile
@@ -47,11 +45,9 @@ class _PROFILEState extends State<PROFILE> {
   @override
   void initState() {
     super.initState();
+    getprofile_user();
     random_noti();
     initConnectivity();
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
-    getprofile_user();
     _initPackageInfo();
   }
 
@@ -85,7 +81,7 @@ class _PROFILEState extends State<PROFILE> {
     late ConnectivityResult result;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      result = await _connectivity.checkConnectivity();
+      result = (await _connectivity.checkConnectivity()) as ConnectivityResult;
     } on PlatformException catch (e) {
       print(e.toString());
       return;
@@ -112,13 +108,10 @@ class _PROFILEState extends State<PROFILE> {
         status_conn = true;
       });
     }
-    setState(() {
-      _connectionStatus = result;
-    });
+    setState(() {});
   }
 
   Future<void> getprofile_user() async {
-    print('IN>>1');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       username = preferences.getString('username');
@@ -136,7 +129,6 @@ class _PROFILEState extends State<PROFILE> {
     });
     if (name != null) {
       setState(() {
-        print('IN>>2');
         st_show = true;
       });
     }
@@ -216,9 +208,13 @@ class _PROFILEState extends State<PROFILE> {
                     child: Column(
                       children: [
                         title_profile(),
-                        new Divider(),
+                        new Divider(
+                          color: Colors.grey[200],
+                        ),
                         edit_profile(name),
-                        new Divider(),
+                        new Divider(
+                          color: Colors.grey[200],
+                        ),
                         edit_address(name, username),
                       ],
                     ),
@@ -229,14 +225,22 @@ class _PROFILEState extends State<PROFILE> {
                     child: Column(
                       children: [
                         title_app(),
-                        new Divider(),
+                        new Divider(
+                          color: Colors.grey[200],
+                        ),
                         privacy(),
-                        new Divider(),
+                        new Divider(
+                          color: Colors.grey[200],
+                        ),
                         call(),
-                        new Divider(),
+                        new Divider(
+                          color: Colors.grey[200],
+                        ),
                         advert_button(),
                         if (st_show == true) ...[
-                          new Divider(),
+                          new Divider(
+                            color: Colors.grey[200],
+                          ),
                           delete_account(context),
                         ],
                       ],
@@ -1051,12 +1055,9 @@ class call extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        final Uri phone = Uri.parse('tel:053700353');
-        if (!await canLaunchUrl(phone)) {
-          print('telll');
-          await launchUrl(phone);
-        } else {
-          throw Exception('Could not launch $phone');
+        Uri phone = Uri.parse('tel:053700353');
+        if (!await launcher.launchUrl(phone)) {
+          debugPrint('Could not launch $phone');
         }
       },
       child: Container(

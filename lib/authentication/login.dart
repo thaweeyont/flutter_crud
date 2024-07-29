@@ -262,7 +262,8 @@ class _LOGINState extends State<LOGIN> {
         "เข้าสู่ระบบ",
         style: MyConstant().title_text(Colors.black),
       ),
-      elevation: 4,
+      elevation: 0,
+      shadowColor: Colors.grey[100],
       actions: [
         IconButton(
           onPressed: () {},
@@ -308,10 +309,11 @@ class _LOGINState extends State<LOGIN> {
                       fontSize: 16,
                       color: Colors.grey[400],
                     ),
-                    prefixIcon: Icon(Icons.account_circle_sharp),
+                    prefixIcon: Icon(
+                      Icons.account_circle_sharp,
+                      color: Colors.grey,
+                    ),
                     prefixIconConstraints: sizeIcon,
-                    // suffixIcon: Icon(Icons.camera_alt),
-                    // suffixIconConstraints: sizeIcon,
                     filled: true,
                     fillColor: Colors.transparent,
                   ),
@@ -338,7 +340,10 @@ class _LOGINState extends State<LOGIN> {
                       fontSize: 16,
                       color: Colors.grey[400],
                     ),
-                    prefixIcon: Icon(Icons.key),
+                    prefixIcon: Icon(
+                      Icons.key,
+                      color: Colors.grey,
+                    ),
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -482,12 +487,17 @@ class _LOGINState extends State<LOGIN> {
               login_user(username.text, password.text);
             }
           },
-          icon: Icon(Icons.vpn_key_rounded, size: 20),
+          icon: Icon(
+            Icons.vpn_key_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
           label: Text(
             "เข้าสู่ระบบ",
             style: TextStyle(
               fontFamily: 'Prompt',
               fontSize: 14,
+              color: Colors.white,
             ),
           ),
         ),
@@ -626,7 +636,9 @@ class register extends StatelessWidget {
               ),
             ),
             Container(
-              child: new Divider(),
+              child: new Divider(
+                color: Colors.grey[300],
+              ),
             ),
             InkWell(
               onTap: () {
@@ -646,7 +658,9 @@ class register extends StatelessWidget {
               ),
             ),
             Container(
-              child: new Divider(),
+              child: new Divider(
+                color: Colors.grey[300],
+              ),
             ),
             InkWell(
               onTap: () {

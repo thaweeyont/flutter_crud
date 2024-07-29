@@ -8,7 +8,7 @@ import 'package:flutter_crud/models/mainproductmodel.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:flutter_crud/widget/skeleton_container.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
 
 class SearchProduct extends StatefulWidget {
   SearchProduct({Key? key}) : super(key: key);
@@ -94,7 +94,9 @@ class _SearchProductState extends State<SearchProduct> {
                   empty_product()
                 ] else ...[
                   data_product(),
-                  if (isloading == true) ...[load_data()],
+                  if (isloading == true) ...[
+                    load_data(),
+                  ],
                 ],
               ],
             ),
@@ -130,9 +132,12 @@ class _SearchProductState extends State<SearchProduct> {
             children: [
               InkWell(
                 onTap: () async {
-                  final Uri urlproduct = Uri.parse(
+                  Uri urlproduct = Uri.parse(
                       'https://www.thaweeyont.com/detail_product?product_id=${dataproduct[index].productId}');
-                  if (!await launchUrl(urlproduct)) {
+                  if (!await launcher.launchUrl(
+                    urlproduct,
+                    mode: launcher.LaunchMode.externalApplication,
+                  )) {
                     throw Exception('Could not launch $urlproduct');
                   }
                 },
@@ -341,7 +346,7 @@ class title_product extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         color: Colors.white,
         width: double.infinity,
-        padding: EdgeInsets.only(right: 8),
+        padding: EdgeInsets.only(right: 8, top: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -354,8 +359,11 @@ class title_product extends StatelessWidget {
             ),
             InkWell(
               onTap: () async {
-                final Uri url = Uri.parse('https://www.thaweeyont.com');
-                if (!await launchUrl(url)) {
+                Uri url = Uri.parse('https://www.thaweeyont.com');
+                if (!await launcher.launchUrl(
+                  url,
+                  mode: launcher.LaunchMode.externalApplication,
+                )) {
                   throw Exception('Could not launch $url');
                 }
               },

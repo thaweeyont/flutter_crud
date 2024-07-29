@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_crud/profile/profile_user.dart';
 import 'package:flutter_crud/taguser/add_score.dart';
 import 'package:flutter_crud/taguser/detail_user.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
@@ -20,7 +21,7 @@ import 'package:flutter_crud/models/jobmechanic.dart';
 import 'package:flutter_crud/widget/coloricon.dart';
 import 'package:flutter_crud/widget/show_progress.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:steps_indicator/steps_indicator.dart';
 import 'package:http/http.dart' as http;
@@ -55,20 +56,20 @@ class _TravelToInstallState extends State<TravelToInstall>
       setarry,
       date_ad_score,
       id_mechanic_staff;
-  late BitmapDescriptor myIcon;
+  // late BitmapDescriptor myIcon;
   Key key = UniqueKey();
   double? a_lat, a_lng;
   List<Jobmechanic> job_mechanic = [];
   List<Getprofilemec> job_profile_mechanic = [];
   double? lat, lng, lat_mec, lng_mec;
-  Completer<GoogleMapController> _controller = Completer();
-  BitmapDescriptor? customIcon;
+  // Completer<GoogleMapController> _controller = Completer();
+  // BitmapDescriptor? customIcon;
   @override
   void initState() {
     super.initState();
     print("==========================>${widget.id_credit}");
     WidgetsBinding.instance!.addObserver(this);
-    SetCustomMarker();
+    // SetCustomMarker();
     // CheckPermission();
     _get_job_mechanic();
     _get_profile_mechanic();
@@ -91,6 +92,7 @@ class _TravelToInstallState extends State<TravelToInstall>
         break;
       case AppLifecycleState.detached:
         break;
+      case AppLifecycleState.hidden:
     }
   }
 
@@ -180,46 +182,45 @@ class _TravelToInstallState extends State<TravelToInstall>
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                              top: 10,
-                            ),
-                            height: size * 1.3,
-                            width: double.infinity,
-                            child: a_lat == null
-                                ? ShowProgress()
-                                : GoogleMap(
-                                    myLocationEnabled: true,
-                                    mapType: isSwitched == false
-                                        ? MapType.normal
-                                        : MapType.hybrid,
-                                    initialCameraPosition: CameraPosition(
-                                      target: LatLng(a_lat!, a_lng!),
-                                      zoom: 18,
-                                    ),
-                                    onMapCreated: (controller) async {},
-                                    gestureRecognizers: Set()
-                                      ..add(Factory<EagerGestureRecognizer>(
-                                          () => EagerGestureRecognizer())),
-                                    markers: <Marker>[
-                                      Marker(
-                                        markerId: MarkerId('id'),
-                                        position: LatLng(a_lat!, a_lng!),
-                                        infoWindow: InfoWindow(
-                                            title: 'สถานที่ติดตั้ง',
-                                            snippet:
-                                                'Lat = $a_lat , lng = $a_lng'),
-                                      ),
-                                    ].toSet(),
-                                    onTap: (argument) {
-                                      setState(() {
-                                        a_lat = argument.latitude;
-                                        a_lng = argument.longitude;
-                                      });
-                                    },
-                                  ),
-                          ),
+                              padding: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 10,
+                              ),
+                              height: size * 1.3,
+                              width: double.infinity,
+                              child: a_lat == null ? ShowProgress() : sizebox()
+                              // : GoogleMap(
+                              //     myLocationEnabled: true,
+                              //     mapType: isSwitched == false
+                              //         ? MapType.normal
+                              //         : MapType.hybrid,
+                              //     initialCameraPosition: CameraPosition(
+                              //       target: LatLng(a_lat!, a_lng!),
+                              //       zoom: 18,
+                              //     ),
+                              //     onMapCreated: (controller) async {},
+                              //     gestureRecognizers: Set()
+                              //       ..add(Factory<EagerGestureRecognizer>(
+                              //           () => EagerGestureRecognizer())),
+                              //     markers: <Marker>[
+                              //       Marker(
+                              //         markerId: MarkerId('id'),
+                              //         position: LatLng(a_lat!, a_lng!),
+                              //         infoWindow: InfoWindow(
+                              //             title: 'สถานที่ติดตั้ง',
+                              //             snippet:
+                              //                 'Lat = $a_lat , lng = $a_lng'),
+                              //       ),
+                              //     ].toSet(),
+                              //     onTap: (argument) {
+                              //       setState(() {
+                              //         a_lat = argument.latitude;
+                              //         a_lng = argument.longitude;
+                              //       });
+                              //     },
+                              //   ),
+                              ),
                           SizedBox(
                             height: 5,
                           ),
@@ -320,51 +321,51 @@ class _TravelToInstallState extends State<TravelToInstall>
   }
 
   //mark home install
-  Marker user_mark() {
-    return Marker(
-      markerId: MarkerId('id'),
-      position: LatLng(lat!, lng!),
-      icon: BitmapDescriptor.defaultMarker,
-      infoWindow: InfoWindow(
-        title: 'คุณอยู่ที่นี้',
-        // snippet: 'Lat = $lat , lng = $lng'
-      ),
-    );
-  }
+  // Marker user_mark() {
+  //   return Marker(
+  //     markerId: MarkerId('id'),
+  //     position: LatLng(lat!, lng!),
+  //     icon: BitmapDescriptor.defaultMarker,
+  //     infoWindow: InfoWindow(
+  //       title: 'คุณอยู่ที่นี้',
+  //       // snippet: 'Lat = $lat , lng = $lng'
+  //     ),
+  //   );
+  // }
 
-  late BitmapDescriptor mapMarker;
+  // late BitmapDescriptor mapMarker;
 
-  void SetCustomMarker() async {
-    BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(48, 48)), 'images/mec_im.png')
-        .then((onValue) {
-      myIcon = onValue;
-    });
+  // void SetCustomMarker() async {
+  //   BitmapDescriptor.fromAssetImage(
+  //           ImageConfiguration(size: Size(48, 48)), 'images/mec_im.png')
+  //       .then((onValue) {
+  //     myIcon = onValue;
+  //   });
 
-    // mapMarker = await BitmapDescriptor.fromAssetImage(
-    //     ImageConfiguration(size: Size(48, 48)), 'images/TY.png');
-  }
+  //   // mapMarker = await BitmapDescriptor.fromAssetImage(
+  //   //     ImageConfiguration(size: Size(48, 48)), 'images/TY.png');
+  // }
 
   //mark home install
-  Marker mec_mark() {
-    return Marker(
-      markerId: MarkerId('id'),
-      position: LatLng(lat_mec!, lng_mec!),
-      icon: myIcon,
-      infoWindow: InfoWindow(
-        title: 'ช่างติดตั้ง',
-        // snippet: 'Lat = $lat , lng = $lng'
-      ),
-    );
-  }
+  // Marker mec_mark() {
+  //   return Marker(
+  //     markerId: MarkerId('id'),
+  //     position: LatLng(lat_mec!, lng_mec!),
+  //     icon: myIcon,
+  //     infoWindow: InfoWindow(
+  //       title: 'ช่างติดตั้ง',
+  //       // snippet: 'Lat = $lat , lng = $lng'
+  //     ),
+  //   );
+  // }
 
   //set mark
-  Set<Marker> myset() {
-    return <Marker>[
-      // user_mark(),
-      mec_mark()
-    ].toSet();
-  }
+  // Set<Marker> myset() {
+  //   return <Marker>[
+  //     // user_mark(),
+  //     mec_mark()
+  //   ].toSet();
+  // }
 
   //เช็คข้อมูลช่างติดตั้ง
   Future<Null> _get_profile_mechanic() async {
@@ -640,8 +641,8 @@ class _TravelToInstallState extends State<TravelToInstall>
             Stack(
           children: [
             Positioned.fill(
-              child: lat == null ? load(size) : showmap(),
-            ),
+                // child: lat == null ? load(size) : showmap(),
+                child: lat == null ? load(size) : sizebox()),
             if (job_mechanic.isNotEmpty) ...[time_show(size)],
             Positioned(
               bottom: 0,
@@ -1027,20 +1028,20 @@ class _TravelToInstallState extends State<TravelToInstall>
       );
 
   //แสดงแผนที่
-  Widget showmap() => GoogleMap(
-        compassEnabled: false,
-        mapType: MapType.normal,
-        tiltGesturesEnabled: false,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(lat!, lng!),
-          zoom: 12,
-        ),
-        onMapCreated: (controller) {},
-        markers: myset(),
-        onTap: (argument) {
-          // _get_job_mechanic();
-        },
-      );
+  // Widget showmap() => GoogleMap(
+  //       compassEnabled: false,
+  //       mapType: MapType.normal,
+  //       tiltGesturesEnabled: false,
+  //       initialCameraPosition: CameraPosition(
+  //         target: LatLng(lat!, lng!),
+  //         zoom: 12,
+  //       ),
+  //       onMapCreated: (controller) {},
+  //       markers: myset(),
+  //       onTap: (argument) {
+  //         // _get_job_mechanic();
+  //       },
+  //     );
 
   //โหลดข้อมูล
   Widget load(double size) => Container(

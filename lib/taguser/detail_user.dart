@@ -16,7 +16,7 @@ import 'package:flutter_crud/models/product_detail.dart';
 import 'package:flutter_crud/models/user_documentmodel.dart';
 import 'package:flutter_crud/widget/show_progress.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:steps_indicator/steps_indicator.dart';
 import 'dart:async';
@@ -67,7 +67,7 @@ class _DetailUserState extends State<DetailUser> {
   List show_st_pd = [];
   List show_st_pdc = [];
   var show_st_date;
-  Completer<GoogleMapController> _controller = Completer();
+  // Completer<GoogleMapController> _controller = Completer();
 
   @override
   void initState() {
@@ -540,53 +540,54 @@ class _DetailUserState extends State<DetailUser> {
                               // color: Colors.amber,
                               width: double.infinity,
                               child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
-                                  bottomLeft: Radius.circular(10),
-                                ),
-                                child: GoogleMap(
-                                  myLocationEnabled:
-                                      datauser[0].statusJob == "8" &&
-                                              st_data >= 2
-                                          ? false
-                                          : true,
-                                  mapType: isSwitched == false
-                                      ? MapType.normal
-                                      : MapType.hybrid,
-                                  initialCameraPosition: CameraPosition(
-                                    target: LatLng(double.parse('$lat'),
-                                        double.parse('$lng')),
-                                    zoom: 18,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10),
+                                    bottomRight: Radius.circular(10),
+                                    bottomLeft: Radius.circular(10),
                                   ),
-                                  onMapCreated: (controller) async {},
-                                  gestureRecognizers: Set()
-                                    ..add(Factory<EagerGestureRecognizer>(
-                                        () => EagerGestureRecognizer())),
-                                  markers: <Marker>[
-                                    Marker(
-                                      markerId: MarkerId('id'),
-                                      position: LatLng(double.parse('$lat'),
-                                          double.parse('$lng')),
-                                      infoWindow: InfoWindow(
-                                          title: 'สถานที่ติดตั้ง',
-                                          snippet: 'Lat = $lat , lng = $lng'),
-                                    ),
-                                  ].toSet(),
-                                  onTap: (argument) {
-                                    if (datauser[0].statusJob == "8" &&
-                                        st_data >= 2) {
-                                    } else {
-                                      setState(() {
-                                        lat = argument.latitude;
-                                        lng = argument.longitude;
-                                        btn_edit = true;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
+                                  child: SizedBox()
+                                  // GoogleMap(
+                                  //   myLocationEnabled:
+                                  //       datauser[0].statusJob == "8" &&
+                                  //               st_data >= 2
+                                  //           ? false
+                                  //           : true,
+                                  //   mapType: isSwitched == false
+                                  //       ? MapType.normal
+                                  //       : MapType.hybrid,
+                                  //   initialCameraPosition: CameraPosition(
+                                  //     target: LatLng(double.parse('$lat'),
+                                  //         double.parse('$lng')),
+                                  //     zoom: 18,
+                                  //   ),
+                                  //   onMapCreated: (controller) async {},
+                                  //   gestureRecognizers: Set()
+                                  //     ..add(Factory<EagerGestureRecognizer>(
+                                  //         () => EagerGestureRecognizer())),
+                                  //   markers: <Marker>[
+                                  //     Marker(
+                                  //       markerId: MarkerId('id'),
+                                  //       position: LatLng(double.parse('$lat'),
+                                  //           double.parse('$lng')),
+                                  //       infoWindow: InfoWindow(
+                                  //           title: 'สถานที่ติดตั้ง',
+                                  //           snippet: 'Lat = $lat , lng = $lng'),
+                                  //     ),
+                                  //   ].toSet(),
+                                  //   onTap: (argument) {
+                                  //     if (datauser[0].statusJob == "8" &&
+                                  //         st_data >= 2) {
+                                  //     } else {
+                                  //       setState(() {
+                                  //         lat = argument.latitude;
+                                  //         lng = argument.longitude;
+                                  //         btn_edit = true;
+                                  //       });
+                                  //     }
+                                  //   },
+                                  // ),
+                                  ),
                             ),
                             SizedBox(
                               height: 5,
@@ -714,46 +715,45 @@ class _DetailUserState extends State<DetailUser> {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                              top: 10,
-                            ),
-                            height: size * 1.3,
-                            width: double.infinity,
-                            child: a_lat == null
-                                ? ShowProgress()
-                                : GoogleMap(
-                                    myLocationEnabled: true,
-                                    mapType: isSwitched == false
-                                        ? MapType.normal
-                                        : MapType.hybrid,
-                                    initialCameraPosition: CameraPosition(
-                                      target: LatLng(a_lat!, a_lng!),
-                                      zoom: 18,
-                                    ),
-                                    onMapCreated: (controller) async {},
-                                    gestureRecognizers: Set()
-                                      ..add(Factory<EagerGestureRecognizer>(
-                                          () => EagerGestureRecognizer())),
-                                    markers: <Marker>[
-                                      Marker(
-                                        markerId: MarkerId('id'),
-                                        position: LatLng(a_lat!, a_lng!),
-                                        infoWindow: InfoWindow(
-                                            title: 'สถานที่ติดตั้ง',
-                                            snippet:
-                                                'Lat = $a_lat , lng = $a_lng'),
-                                      ),
-                                    ].toSet(),
-                                    onTap: (argument) {
-                                      setState(() {
-                                        a_lat = argument.latitude;
-                                        a_lng = argument.longitude;
-                                      });
-                                    },
-                                  ),
-                          ),
+                              padding: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 10,
+                              ),
+                              height: size * 1.3,
+                              width: double.infinity,
+                              child: a_lat == null ? ShowProgress() : SizedBox()
+                              // GoogleMap(
+                              //     myLocationEnabled: true,
+                              //     mapType: isSwitched == false
+                              //         ? MapType.normal
+                              //         : MapType.hybrid,
+                              //     initialCameraPosition: CameraPosition(
+                              //       target: LatLng(a_lat!, a_lng!),
+                              //       zoom: 18,
+                              //     ),
+                              //     onMapCreated: (controller) async {},
+                              //     gestureRecognizers: Set()
+                              //       ..add(Factory<EagerGestureRecognizer>(
+                              //           () => EagerGestureRecognizer())),
+                              //     markers: <Marker>[
+                              //       Marker(
+                              //         markerId: MarkerId('id'),
+                              //         position: LatLng(a_lat!, a_lng!),
+                              //         infoWindow: InfoWindow(
+                              //             title: 'สถานที่ติดตั้ง',
+                              //             snippet:
+                              //                 'Lat = $a_lat , lng = $a_lng'),
+                              //       ),
+                              //     ].toSet(),
+                              //     onTap: (argument) {
+                              //       setState(() {
+                              //         a_lat = argument.latitude;
+                              //         a_lng = argument.longitude;
+                              //       });
+                              //     },
+                              //   ),
+                              ),
                           SizedBox(
                             height: 5,
                           ),

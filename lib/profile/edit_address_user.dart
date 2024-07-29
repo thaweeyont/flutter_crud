@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/profile/edit_submit_address.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:sizer/sizer.dart';
 
@@ -16,7 +16,7 @@ class Edit_address extends StatefulWidget {
 
 class _Edit_addressState extends State<Edit_address> {
   //เรียกใช้ api ลบที่อยู่
-  
+
   Future delete_address() async {
     var uri = Uri.parse(
         "http://110.164.131.46/flutter_api/api_user/delete_user_address.php");
@@ -82,7 +82,8 @@ class _Edit_addressState extends State<Edit_address> {
         body: Stack(
           children: [
             Positioned.fill(
-              child: showmap(),
+              child: SizedBox(),
+              // showmap(),
             ),
             next(size),
             delete(size),
@@ -91,52 +92,52 @@ class _Edit_addressState extends State<Edit_address> {
   }
 
   //แสดงแผนที่
-  Widget showmap() => GoogleMap(
-        compassEnabled: false,
-        mapType: MapType.normal,
-        tiltGesturesEnabled: false,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(double.parse(widget.lat), double.parse(widget.lng)),
-          zoom: 16,
-        ),
-        onMapCreated: (controller) {},
-        zoomControlsEnabled: false,
-        myLocationButtonEnabled: true,
-        myLocationEnabled: true,
-        markers: n_lat == null
-            ? <Marker>[mark()].toSet()
-            : <Marker>[new_mark()].toSet(),
-        onTap: (argument) {
-          setState(() {
-            n_lat = argument.latitude;
-            n_lng = argument.longitude;
-          });
-        },
-      );
+  // Widget showmap() => GoogleMap(
+  //       compassEnabled: false,
+  //       mapType: MapType.normal,
+  //       tiltGesturesEnabled: false,
+  //       initialCameraPosition: CameraPosition(
+  //         target: LatLng(double.parse(widget.lat), double.parse(widget.lng)),
+  //         zoom: 16,
+  //       ),
+  //       onMapCreated: (controller) {},
+  //       zoomControlsEnabled: false,
+  //       myLocationButtonEnabled: true,
+  //       myLocationEnabled: true,
+  //       markers: n_lat == null
+  //           ? <Marker>[mark()].toSet()
+  //           : <Marker>[new_mark()].toSet(),
+  //       onTap: (argument) {
+  //         setState(() {
+  //           n_lat = argument.latitude;
+  //           n_lng = argument.longitude;
+  //         });
+  //       },
+  //     );
 
-  Marker mark() {
-    return Marker(
-      markerId: MarkerId('id'),
-      position: LatLng(double.parse(widget.lat), double.parse(widget.lng)),
-      // icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
-      infoWindow: InfoWindow(
-        title: 'สถานที่',
-        // snippet: 'Lat = $lat , lng = $lng'
-      ),
-    );
-  }
+  // Marker mark() {
+  //   return Marker(
+  //     markerId: MarkerId('id'),
+  //     position: LatLng(double.parse(widget.lat), double.parse(widget.lng)),
+  //     // icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
+  //     infoWindow: InfoWindow(
+  //       title: 'สถานที่',
+  //       // snippet: 'Lat = $lat , lng = $lng'
+  //     ),
+  //   );
+  // }
 
-  Marker new_mark() {
-    return Marker(
-      markerId: MarkerId('id'),
-      position: LatLng(n_lat, n_lng),
-      // icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
-      infoWindow: InfoWindow(
-        title: 'สถานที่',
-        // snippet: 'Lat = $lat , lng = $lng'
-      ),
-    );
-  }
+  // Marker new_mark() {
+  //   return Marker(
+  //     markerId: MarkerId('id'),
+  //     position: LatLng(n_lat, n_lng),
+  //     // icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
+  //     infoWindow: InfoWindow(
+  //       title: 'สถานที่',
+  //       // snippet: 'Lat = $lat , lng = $lng'
+  //     ),
+  //   );
+  // }
 
   Widget next(size) => Positioned(
         bottom: 7.h,
@@ -175,16 +176,30 @@ class _Edit_addressState extends State<Edit_address> {
                   // print("${widget.lng}");
                   Navigator.push(context,
                       CupertinoPageRoute(builder: (context) {
-                    return Edit_submit_address(widget.id, widget.lat,
-                        widget.lng, widget.name, widget.address,widget.provinces,widget.amphures,widget.districts);
+                    return Edit_submit_address(
+                        widget.id,
+                        widget.lat,
+                        widget.lng,
+                        widget.name,
+                        widget.address,
+                        widget.provinces,
+                        widget.amphures,
+                        widget.districts);
                   }));
                 } else {
                   // print("${n_lat}");
                   // print("${n_lng}");
                   Navigator.push(context,
                       CupertinoPageRoute(builder: (context) {
-                    return Edit_submit_address(widget.id, n_lat.toString(),
-                        n_lng.toString(), widget.name, widget.address,widget.provinces,widget.amphures,widget.districts);
+                    return Edit_submit_address(
+                        widget.id,
+                        n_lat.toString(),
+                        n_lng.toString(),
+                        widget.name,
+                        widget.address,
+                        widget.provinces,
+                        widget.amphures,
+                        widget.districts);
                   }));
                 }
               },
