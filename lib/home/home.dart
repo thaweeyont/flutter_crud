@@ -133,7 +133,6 @@ class Promotion_data extends StatelessWidget {
             return Column(
               children: [
                 Container(
-                  // color: Color.fromARGB(255, 197, 16, 16),
                   padding: EdgeInsets.all(8.0),
                   child: Column(
                     children: [
@@ -154,7 +153,6 @@ class Promotion_data extends StatelessWidget {
                         ],
                       ),
                       Container(
-                        // color: Colors.cyan,
                         width: double.infinity,
                         height: MediaQuery.of(context).size.width * 0.35,
                         child: ClipRRect(
@@ -183,7 +181,6 @@ class Promotion_data extends StatelessWidget {
                             ),
                       ),
                       Container(
-                        // color: Colors.deepPurple,
                         height: MediaQuery.of(context).size.height * 0.25,
                         child: GridView(
                           scrollDirection: Axis.horizontal,
@@ -588,9 +585,6 @@ class buildSkeleton_producthot extends StatelessWidget {
         height: MediaQuery.of(context).size.height * 0.27,
         child: GridView.builder(
           padding: EdgeInsets.only(left: 4),
-          // physics:
-          //     BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          // padding: EdgeInsets.symmetric(horizontal: 15),
           scrollDirection: Axis.horizontal,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1,
@@ -613,7 +607,6 @@ class buildSkeleton_producthot extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * 0.20,
                     radins: 0,
                   ),
-                  // SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(5),
                     child: SkeletonContainer.square(
@@ -769,7 +762,7 @@ class list_product extends StatelessWidget {
                                 Text(
                                   " \฿${items[index].optionPrice}",
                                   style: TextStyle(
-                                    color: Colors.black.withOpacity(0.5),
+                                    color: Colors.black.withAlpha(130),
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.lineThrough,
@@ -935,7 +928,7 @@ class list_product_hot extends StatelessWidget {
                                   Text(
                                     " \฿${items[index].optionPrice}",
                                     style: TextStyle(
-                                      color: Colors.black.withOpacity(0.5),
+                                      color: Colors.black.withAlpha(130),
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.lineThrough,
@@ -1124,15 +1117,15 @@ class distconnect extends StatelessWidget {
 class load extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return PopScope(
+      canPop: false, // ป้องกันไม่ให้ back ได้
       child: Center(
-          child: CircularProgressIndicator(
-        valueColor:
-            AlwaysStoppedAnimation<Color>(Color.fromRGBO(230, 185, 128, 1)),
-      )),
-      onWillPop: () async {
-        return false;
-      },
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Color.fromRGBO(230, 185, 128, 1),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -1203,8 +1196,6 @@ class title_product extends StatelessWidget {
             ),
             InkWell(
               onTap: () async {
-                print('test2');
-                // await launch("https://www.thaweeyont.com");
                 Uri url = Uri.parse('https://www.thaweeyont.com');
                 if (!await launcher.launchUrl(
                   url,

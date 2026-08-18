@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_options.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+// import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider_plus/carousel_slider_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/models/dashbordmodel.dart';
@@ -43,7 +42,7 @@ class _BannerSliderState extends State<BannerSlider> {
       datadashbord = dashbordFromJson(respose.body);
       datadashbord_val.add(datadashbord);
     } catch (e) {
-      // print("ไม่มีข้อมูล");
+      print("ไม่มีข้อมูล");
     }
   }
 
@@ -67,7 +66,6 @@ class _BannerSliderState extends State<BannerSlider> {
   }
 
   Container _buildBanner() {
-    final orientation = MediaQuery.of(context).orientation;
     return Container(
       margin: EdgeInsets.only(bottom: 50),
       width: double.infinity,
@@ -147,7 +145,7 @@ class CashInfo extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
+              color: Colors.grey.withAlpha(130),
               spreadRadius: 0.2,
               blurRadius: 7,
               offset: Offset(0, 1),
@@ -160,7 +158,7 @@ class CashInfo extends StatelessWidget {
             Icon(
               Icons.qr_code_rounded,
               size: 48,
-              color: Colors.grey.withOpacity(0.9),
+              color: Colors.grey.withAlpha(220),
             ),
             verticalDivider,
             Image.asset(

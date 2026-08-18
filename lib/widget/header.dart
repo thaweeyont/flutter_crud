@@ -71,7 +71,6 @@ class _HeaderState extends State<Header> {
                   ],
                   Expanded(
                     child: SizedBox(
-                      // height: MediaQuery.of(context).size.height * 0.05,
                       child: TextField(
                         onTap: () {
                           Navigator.push(context,
@@ -102,10 +101,15 @@ class _HeaderState extends State<Header> {
                       ),
                     ),
                   ),
-                  // SizedBox(width: 8),
                   _buildIconButton(
                     onPressed: () async {
-                      await launch("https://www.thaweeyont.com/");
+                      final Uri url = Uri.parse("https://www.thaweeyont.com/");
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      } else {
+                        throw 'Could not launch $url';
+                      }
                     },
                     icon: Icons.shopping_cart,
                     notification: notification,
@@ -124,14 +128,10 @@ class _HeaderState extends State<Header> {
           ),
         ),
       );
-    }
-        // child:
-        );
+    });
   }
 
-  _buildInputSearch() {
-    // final sizeIcon = BoxConstraints(minWidth: 40, minHeight: 40);
-
+  buildInputSearch() {
     final border = OutlineInputBorder(
       borderSide: const BorderSide(
         color: Colors.transparent,

@@ -73,9 +73,6 @@ class _SearchProductState extends State<SearchProduct> {
 
   @override
   Widget build(BuildContext context) {
-    double size = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Stack(
         children: [
@@ -88,7 +85,6 @@ class _SearchProductState extends State<SearchProduct> {
                 ] else if (defaultTargetPlatform == TargetPlatform.android) ...[
                   SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 ],
-                // SizedBox(height: 130),
                 title_product(),
                 if (dataproduct.isEmpty) ...[
                   empty_product()
@@ -174,7 +170,6 @@ class _SearchProductState extends State<SearchProduct> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 5),
                               child: SizedBox(
-                                // height: 5,
                                 width: double.infinity,
                                 child: Text(
                                   "${dataproduct[index].productName}",
@@ -197,7 +192,7 @@ class _SearchProductState extends State<SearchProduct> {
                                   Text(
                                     " \฿${dataproduct[index].optionPrice}",
                                     style: TextStyle(
-                                      color: Colors.black.withOpacity(0.5),
+                                      color: Colors.black.withAlpha(130),
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       decoration: TextDecoration.lineThrough,
@@ -390,7 +385,7 @@ class empty_product extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
+      height: 200,
       color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -401,8 +396,8 @@ class empty_product extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.close,
-                size: 25,
+                Icons.cancel_sharp,
+                size: 35,
                 color: Colors.grey,
               ),
               Text(

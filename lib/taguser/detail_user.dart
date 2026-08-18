@@ -5,7 +5,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+// import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/models/address_installmodel.dart';
@@ -443,7 +444,7 @@ class _DetailUserState extends State<DetailUser> {
     showAnimatedDialog(
       context: context,
       barrierDismissible: true,
-      barrierColor: Colors.black12,
+      // barrierColor: Colors.black12,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: GestureDetector(
@@ -2243,7 +2244,7 @@ class _DetailUserState extends State<DetailUser> {
             borderRadius: BorderRadius.circular(100),
             boxShadow: [
               BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withAlpha(90),
                   blurRadius: 0,
                   offset: Offset.zero)
             ]),

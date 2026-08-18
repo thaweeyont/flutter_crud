@@ -1,19 +1,16 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/Tap.dart';
-import 'package:flutter_crud/authentication/login.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/models/login_usermodal.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:nextflow_thai_personal_id/nextflow_thai_personal_id.dart';
 
 import '../privacy/Privacy.dart';
 import 'package:native_ios_dialog/native_ios_dialog.dart';
@@ -105,7 +102,7 @@ class _RegisterState extends State<Register> {
     }
   }
 
-  Future<Null> gettoken() async {
+  Future<void> gettoken() async {
     FirebaseMessaging.instance.getToken().then((value) {
       setState(() {
         token = value;
@@ -118,7 +115,7 @@ class _RegisterState extends State<Register> {
     });
   }
 
-  Future<Null> update_token(String token) async {
+  Future<void> update_token(String token) async {
     if (username.text != "") {
       var uri = Uri.parse(
           "http://110.164.131.46/flutter_api/api_user/update_token_new.php");
@@ -132,7 +129,6 @@ class _RegisterState extends State<Register> {
       if (response.statusCode == 200) {
         print('ok->5');
         print("==================>update_token_success");
-        // Navigator.pop(context);
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => TapControl("3")),
@@ -156,7 +152,6 @@ class _RegisterState extends State<Register> {
         Uri.http(ipconfig, '/flutter_api/api_user/check_id_user_new.php',
             {"username": username, "name": name, "phone": phone}),
       );
-      // print(respose.body);
       if (respose.statusCode == 200) {
         if (respose.body == "1") {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -172,39 +167,13 @@ class _RegisterState extends State<Register> {
                 ]).show();
           } else if (defaultTargetPlatform == TargetPlatform.android) {
             print('Phone>>android');
-            // normalDialog(
-            //     context, 'แจ้งเตือน', "ข้อมูลนี้ถูกใช้ลงทะเบียนไปแล้ว");
             nDialog(context, 'แจ้งเตือน', 'ข้อมูลนี้ถูกใช้ลงทะเบียนไปแล้ว');
           }
         } else if (respose.body == "2") {
           print('ok->3');
           showProgressDialog(context);
           gettoken();
-          // Navigator.pop(context);
         }
-        // else {
-        //   setState(() {
-        //     datauser = loginusermodelFromJson(respose.body);
-        //   });
-
-        //   if (datauser[0].idcard == idcard.text) {
-        //     if (defaultTargetPlatform == TargetPlatform.iOS) {
-        //       NativeIosDialog(
-        //           title: "แจ้งเตือน",
-        //           message: "มีข้อมูลอยู่แล้ว",
-        //           style: style,
-        //           actions: [
-        //             NativeIosDialogAction(
-        //                 text: "ตกลง",
-        //                 style: NativeIosDialogActionStyle.defaultStyle,
-        //                 onPressed: () {}),
-        //           ]).show();
-        //     } else if (defaultTargetPlatform == TargetPlatform.android) {
-        //       print('Phone>>android');
-        //       normalDialog(context, 'แจ้งเตือน', "มีข้อมูลอยู่แล้ว");
-        //     }
-        //   }
-        // }
       }
     } catch (e) {
       print("ไม่มีข้อมูล");
@@ -529,7 +498,6 @@ class _RegisterState extends State<Register> {
   Widget address_input(size) => Padding(
         padding: EdgeInsets.only(bottom: 10),
         child: Container(
-          // height: MediaQuery.of(context).size.height * 0.25,
           child: TextFormField(
             maxLength: 100,
             style: TextStyle(
@@ -543,7 +511,6 @@ class _RegisterState extends State<Register> {
               return null;
             },
             minLines: 5,
-            // keyboardType: TextInputType.multiline,
             maxLines: null,
             controller: address,
             decoration: InputDecoration(
@@ -571,7 +538,6 @@ class _RegisterState extends State<Register> {
           backgroundColor: Colors.red,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
-            // side: BorderSide(color: Colors.white),
           ),
           padding: EdgeInsets.all(8),
         ),
@@ -600,8 +566,6 @@ class _RegisterState extends State<Register> {
                       ]).show();
                 } else if (defaultTargetPlatform == TargetPlatform.android) {
                   print('Phone>>android');
-                  // normalDialog(context, 'แจ้งเตือน',
-                  //     "ชื่อผู้ใช้ต้องมีตัว A-Z,a-z,0-9 เท่านั้น");
                   nDialog(context, 'แจ้งเตือน',
                       'ชื่อผู้ใช้ต้องมีตัว A-Z,a-z,0-9 เท่านั้น');
                 }
@@ -619,8 +583,6 @@ class _RegisterState extends State<Register> {
                       ]).show();
                 } else if (defaultTargetPlatform == TargetPlatform.android) {
                   print('Phone>>android');
-                  // normalDialog(context, 'แจ้งเตือน',
-                  //     "รหัสผ่านต้องมีตัว A-Z,a-z,0-9 เท่านั้น");
                   nDialog(context, 'แจ้งเตือน',
                       'ชื่อผู้ใช้ต้องมีตัว A-Z,a-z,0-9 เท่านั้น');
                 }
@@ -639,7 +601,6 @@ class _RegisterState extends State<Register> {
                       ]).show();
                 } else if (defaultTargetPlatform == TargetPlatform.android) {
                   print('Phone>>android');
-                  // normalDialog(context, 'แจ้งเตือน', "เบอร์โทรศัพท์ไม่ถูกต้อง");
                   nDialog(context, 'แจ้งเตือน', 'เบอร์โทรศัพท์ไม่ถูกต้อง');
                 }
               } else {
@@ -670,8 +631,6 @@ class _RegisterState extends State<Register> {
                         ]).show();
                   } else if (defaultTargetPlatform == TargetPlatform.android) {
                     print('Phone>>android');
-                    // normalDialog(
-                    //     context, 'แจ้งเตือน', "กรุณาเพิ่มข้อมูลให้ครบถ้วน");
                     nDialog(context, 'แจ้งเตือน', 'กรุณาเพิ่มข้อมูลให้ครบถ้วน');
                     setState(() {
                       show_validation = true;
@@ -693,8 +652,6 @@ class _RegisterState extends State<Register> {
                     ]).show();
               } else if (defaultTargetPlatform == TargetPlatform.android) {
                 print('Phone>>android');
-                // normalDialog(
-                //     context, 'แจ้งเตือน', "กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน");
                 nDialog(
                     context, 'แจ้งเตือน', 'กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน');
               }
@@ -773,8 +730,6 @@ class _RegisterState extends State<Register> {
             style: MyConstant().normal_text(Colors.grey),
           ),
           value: selectedValue_amphures,
-          // icon: const Icon(
-          //     Icons.arrow_downward),
           iconSize: 24,
           elevation: 16,
           isExpanded: true,
@@ -816,15 +771,12 @@ class _RegisterState extends State<Register> {
             style: MyConstant().normal_text(Colors.grey),
           ),
           value: selectedValue_districts,
-          // icon: const Icon(
-          //     Icons.arrow_downward),
           iconSize: 24,
           elevation: 16,
           isExpanded: true,
           underline: SizedBox(),
           onChanged: (String? newValue) {
             if (newValue != null) {
-              // get_amphures(newValue);
               setState(() {
                 selectedValue_districts = newValue;
               });

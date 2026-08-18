@@ -7,17 +7,16 @@ import 'package:dio/dio.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+// import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:flutter_crud/Tap.dart';
 import 'package:flutter_crud/dialog/dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
-import 'package:flutter_crud/main.dart';
 import 'package:flutter_crud/models/data_get_receiptmodel.dart';
 import 'package:flutter_crud/models/datastaffmodel.dart';
 import 'package:flutter_crud/widget/coloricon.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:sizer/sizer.dart';
 import 'package:native_ios_dialog/native_ios_dialog.dart';
 
@@ -229,7 +228,7 @@ class _AddScoreState extends State<AddScore> {
     double size = MediaQuery.of(context).size.width;
     showAnimatedDialog(
       context: context,
-      barrierColor: Colors.transparent,
+      // barrierColor: Colors.transparent,
       barrierDismissible: false,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
@@ -295,7 +294,7 @@ class _AddScoreState extends State<AddScore> {
     showAnimatedDialog(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.transparent,
+      // barrierColor: Colors.transparent,
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: SimpleDialog(

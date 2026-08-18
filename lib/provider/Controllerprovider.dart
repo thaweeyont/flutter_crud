@@ -1,11 +1,9 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
 import 'package:flutter_crud/models/advertmodel.dart';
-import 'package:flutter_crud/models/mainproductmodel.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,9 +45,8 @@ class ControllerProvider with ChangeNotifier {
 
   //Widget โฆษณา
   advert_img(context) async {
-    double size = MediaQuery.of(context).size.width;
     showAnimatedDialog(
-      barrierColor: Colors.transparent,
+      // barrierColor: Colors.transparent,
       context: context,
       barrierDismissible: false,
       builder: (context) => StatefulBuilder(
@@ -68,8 +65,14 @@ class ControllerProvider with ChangeNotifier {
                   Stack(
                     children: [
                       InkWell(
-                        onTap: () {
-                          launch("${listadvert[0].urlLinkName}");
+                        onTap: () async {
+                          final Uri url =
+                              Uri.parse(listadvert[0].urlLinkName ?? '');
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          } else {
+                            throw 'ไม่สามารถเปิดลิงก์ได้: $url';
+                          }
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
@@ -135,9 +138,9 @@ class ControllerProvider with ChangeNotifier {
           ),
         ),
       ),
-      animationType: DialogTransitionType.fadeScale,
-      curve: Curves.fastOutSlowIn,
-      duration: Duration(milliseconds: 1),
+      // animationType: DialogTransitionType.fadeScale,
+      // curve: Curves.fastOutSlowIn,
+      // duration: Duration(milliseconds: 1),
     );
   }
 
@@ -157,7 +160,6 @@ class ControllerProvider with ChangeNotifier {
       }
     }
 
-    // setState(() {
     if (scrollOffset == 0) {
       backgroundColorSearch = Colors.white;
       ColorIcon = Colors.white;
@@ -168,9 +170,8 @@ class ControllerProvider with ChangeNotifier {
       ColorIcon = Colors.red.shade400;
     }
 
-    backgroundColor = Colors.white.withOpacity(opacity);
-    // });
-    // up_date_page.add(_backgroundColor);
+    backgroundColor = Colors.white.withAlpha((opacity * 255).toInt());
+
     notifyListeners();
   }
 

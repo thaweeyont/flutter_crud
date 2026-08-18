@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:flutter_crud/utility/my_constant.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ndialog/ndialog.dart';
@@ -45,8 +45,8 @@ Future<Null> normalDialog(
       ],
     ),
     // animationType: DialogTransitionType.fadeScale,
-    curve: Curves.fastOutSlowIn,
-    duration: Duration(milliseconds: 800),
+    // curve: Curves.fastOutSlowIn,
+    // duration: Duration(milliseconds: 800),
   );
 }
 
@@ -71,8 +71,6 @@ Future<void> nDialog(BuildContext context, title, message) {
             style: MyConstant().textDialog(Colors.blueAccent),
           ),
           onPressed: () => Navigator.pop(context)),
-      // TextButton(
-      //     child: Text("Close"), onPressed: () => Navigator.pop(context)),
     ],
   ).show(context);
 }
@@ -220,18 +218,19 @@ Future<Null> contactDialog(
   );
 }
 
-Future<Null> showProgressDialog(BuildContext context) async {
+Future<void> showProgressDialog(BuildContext context) async {
   showDialog(
     context: context,
-    builder: (context) => WillPopScope(
+    barrierDismissible: false,
+    builder: (context) => const PopScope(
+      canPop: false,
       child: Center(
-          child: CircularProgressIndicator(
-        valueColor:
-            AlwaysStoppedAnimation<Color>(Color.fromRGBO(230, 185, 128, 1)),
-      )),
-      onWillPop: () async {
-        return false;
-      },
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Color.fromRGBO(230, 185, 128, 1),
+          ),
+        ),
+      ),
     ),
   );
 }

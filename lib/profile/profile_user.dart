@@ -330,7 +330,7 @@ class _PROFILEState extends State<PROFILE> {
     );
   }
 
-  _buildInputSearch() {
+  buildInputSearch() {
     final sizeIcon = BoxConstraints(minWidth: 40, minHeight: 40);
 
     final border = OutlineInputBorder(
@@ -373,7 +373,7 @@ class _PROFILEState extends State<PROFILE> {
     );
   }
 
-  _buildIconButton(
+  buildIconButton(
           {VoidCallback? onPressed, IconData? icon, int notification = 0}) =>
       Stack(
         children: [
@@ -847,26 +847,27 @@ class _PROFILEState extends State<PROFILE> {
             ),
             onPressed: () => Navigator.pop(context)),
         TextButton(
-            child: Text(
-              "ออกจากระบบ",
-              style: MyConstant().textDialog(Colors.redAccent),
-            ),
-            onPressed: () async {
-              SharedPreferences preferences =
-                  await SharedPreferences.getInstance();
+          child: Text(
+            "ออกจากระบบ",
+            style: MyConstant().textDialog(Colors.redAccent),
+          ),
+          onPressed: () async {
+            SharedPreferences preferences =
+                await SharedPreferences.getInstance();
 
-              preferences.clear();
-              preferences.setString('st_isf', "true");
-              setState(() {
-                st_show = false;
-                username = null;
-                name = null;
-                // idcard = null;
-                profile = null;
-                file = null;
-              });
-              Navigator.pop(context);
-            }),
+            preferences.clear();
+            preferences.setString('st_isf', "true");
+            setState(() {
+              st_show = false;
+              username = null;
+              name = null;
+              // idcard = null;
+              profile = null;
+              file = null;
+            });
+            Navigator.pop(context);
+          },
+        ),
       ],
     ).show(context);
   }
@@ -893,15 +894,16 @@ class _PROFILEState extends State<PROFILE> {
             ),
             onPressed: () => Navigator.pop(context)),
         TextButton(
-            child: Text(
-              "ตกลง",
-              style: MyConstant().textDialog(Colors.redAccent),
-            ),
-            onPressed: () {
-              showProgressDialog(context);
-              delete_account_user(username);
-              Navigator.pop(context);
-            }),
+          child: Text(
+            "ตกลง",
+            style: MyConstant().textDialog(Colors.redAccent),
+          ),
+          onPressed: () {
+            showProgressDialog(context);
+            delete_account_user(username);
+            Navigator.pop(context);
+          },
+        ),
       ],
     ).show(context);
   }

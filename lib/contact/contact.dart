@@ -18,10 +18,13 @@ class Contact extends StatefulWidget {
 class _ContactState extends State<Contact> with TickerProviderStateMixin {
   final Connectivity _connectivity = Connectivity();
   bool status_conn = true;
+  bool submitted = false;
   //validation
   final _formKey = GlobalKey<FormState>();
   //ประกาศตัวแปร
   TextEditingController detail = TextEditingController();
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+  bool hasBeenValidated = false;
 
   //เรียกใช้ api เพิ่มข้อมูล
   Future addContact() async {
@@ -125,7 +128,6 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                 color: Colors.grey[50],
                 clipBehavior: Clip.antiAlias,
                 shape: RoundedRectangleBorder(
-                  // side: BorderSide(color: Colors.red, width: 0.5),
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 elevation: 0,
@@ -140,16 +142,12 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                             'สอบถาม / คำแนะนำ',
                             style: MyConstant().normal_text(Colors.black),
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
+                          SizedBox(height: 20),
                           Text(
                             '     ท่านสามารถส่งความคิดเห็น คำแนะนำ คำติชม หรือสอบถามเกี่ยวกับสินค้าและการบริการของทวียนต์โดยกรอกคำแนะนำหรือติดต่อเบอร์โทร',
                             style: MyConstant().normal_text(Colors.black),
                           ),
-                          SizedBox(
-                            height: 40,
-                          ),
+                          SizedBox(height: 40),
                           InkWell(
                             onTap: () async {
                               Uri url = Uri.parse('fb://page/150711851621535');
@@ -168,19 +166,19 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                 );
                               }
                             },
-                            child: Row(children: [
-                              Image.asset(
-                                'images/facebook.png',
-                                width: 45,
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                "ติดต่อผ่านทาง Facebook",
-                                style: MyConstant().normal_text(Colors.black),
-                              ),
-                            ]),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'images/facebook.png',
+                                  width: 45,
+                                ),
+                                SizedBox(width: 20),
+                                Text(
+                                  "ติดต่อผ่านทาง Facebook",
+                                  style: MyConstant().normal_text(Colors.black),
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(
                             height: 20,
@@ -298,6 +296,7 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                     bottom: 15,
                                   ),
                                   child: TextFormField(
+                                    cursorColor: Colors.black,
                                     style: TextStyle(
                                       color: Colors.grey[600],
                                       fontFamily: 'Prompt',
@@ -308,11 +307,17 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                     maxLines: null,
                                     controller: detail,
                                     validator: (String? str) {
-                                      if (str == "") {
+                                      if (str == null || str.trim().isEmpty) {
                                         return "กรุณาป้อนคำแนะนำ";
                                       }
                                       return null;
                                     },
+                                    // onChanged: (value) {
+                                    //   if (submitted) {
+                                    //     // validate เฉพาะหลังจากที่เคยกดส่งแล้ว
+                                    //     _formKey.currentState?.validate();
+                                    //   }
+                                    // },
                                     decoration: new InputDecoration(
                                       labelText: "",
                                       labelStyle: TextStyle(
@@ -322,6 +327,15 @@ class _ContactState extends State<Contact> with TickerProviderStateMixin {
                                       border: OutlineInputBorder(
                                         borderRadius: const BorderRadius.all(
                                           const Radius.circular(10.0),
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                          width: 1.5,
                                         ),
                                       ),
                                     ),
@@ -500,21 +514,18 @@ class appbar extends StatelessWidget {
         ),
         child: FlexibleSpaceBar(
           centerTitle: true,
-          title: Padding(
-            padding: const EdgeInsets.only(right: 60.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "ช่วยเหลือ ",
-                  style: MyConstant().bold_text(Colors.red.shade600),
-                ),
-                Icon(
-                  Icons.contact_support_rounded,
-                  color: Colors.red[700],
-                ),
-              ],
-            ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "ช่วยเหลือ ",
+                style: MyConstant().bold_text(Colors.red.shade600),
+              ),
+              Icon(
+                Icons.contact_support_rounded,
+                color: Colors.red[700],
+              ),
+            ],
           ),
           background: Image.asset(
             "images/contactfilter.jpg",

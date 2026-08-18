@@ -214,8 +214,7 @@ class _CateGoryState extends State<CateGory> {
                                         Text(
                                           " \฿${dataproduct[index].optionPrice}",
                                           style: TextStyle(
-                                            color:
-                                                Colors.black.withOpacity(0.5),
+                                            color: Colors.black.withAlpha(130),
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                             decoration:
@@ -286,7 +285,7 @@ class empty_product extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
+      height: 200,
       color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -297,7 +296,7 @@ class empty_product extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.close,
+                Icons.cancel_sharp,
                 size: 25,
                 color: Colors.grey,
               ),

@@ -2,7 +2,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/home/category.dart';
 import 'package:flutter_crud/connection/ipconfig.dart';
@@ -26,10 +25,8 @@ class _MainMenuState extends State<MainMenu> {
       var respose =
           await http.get(Uri.http(ipconfig_web, '/api_mobile/category.php'));
       if (respose.statusCode == 200) {
-        // setState(() {
         category = categorymodelFromJson(respose.body);
         category_val.add(category);
-        // });
       }
     } catch (e) {
       print("ไม่มีข้อมูล");

@@ -28,9 +28,8 @@ class _LOGINState extends State<LOGIN> {
   List<Loginusermodel> datauser = [];
   var data;
   String? token;
-  bool _isLoggedIn = false;
   bool statusReadEye = true;
-  Map _userobj = {};
+  Map userobj = {};
   int currentDialogStyle = 0;
 
   @override
@@ -49,7 +48,7 @@ class _LOGINState extends State<LOGIN> {
         Uri.http(ipconfig, '/flutter_api/api_user/login_user_new.php',
             {"username": username, "password": password}),
       );
-      // print(respose.body);
+
       if (respose.statusCode == 200) {
         setState(() {
           datauser = loginusermodelFromJson(respose.body);
@@ -66,20 +65,19 @@ class _LOGINState extends State<LOGIN> {
         if (respose.body == "1") {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
             NativeIosDialog(
-                title: "แจ้งเตือน",
-                message: "บัญชีนี้ลบไปแล้ว",
-                style: style,
-                actions: [
-                  NativeIosDialogAction(
-                      text: "ตกลง",
-                      style: NativeIosDialogActionStyle.defaultStyle,
-                      onPressed: () {}),
-                ]).show();
+              title: "แจ้งเตือน",
+              message: "บัญชีนี้ลบไปแล้ว",
+              style: style,
+              actions: [
+                NativeIosDialogAction(
+                    text: "ตกลง",
+                    style: NativeIosDialogActionStyle.defaultStyle,
+                    onPressed: () {}),
+              ],
+            ).show();
             Navigator.pop(context);
           } else if (defaultTargetPlatform == TargetPlatform.android) {
-            print('Phone>>android');
             Navigator.pop(context);
-            // normalDialog(context, 'แจ้งเตือน', "บัญชีนี้ลบไปแล้ว");
             nDialog(context, 'แจ้งเตือน', 'บัญชีนี้ถูกลบแล้ว');
           }
         } else {
@@ -98,7 +96,6 @@ class _LOGINState extends State<LOGIN> {
           } else if (defaultTargetPlatform == TargetPlatform.android) {
             print('Phone>>android');
             Navigator.pop(context);
-            // normalDialog(context, 'แจ้งเตือน', "ไม่พบข้อมูลบัญชีนี้");
             nDialog(context, 'แจ้งเตือน', 'ไม่พบข้อมูลบัญชีนี้');
           }
         }
@@ -115,10 +112,8 @@ class _LOGINState extends State<LOGIN> {
                     onPressed: () {}),
               ]).show();
         } else if (defaultTargetPlatform == TargetPlatform.android) {
-          print('Phone>>android');
           print("ไม่มีข้อมูล");
           Navigator.pop(context);
-          // normalDialog(context, 'แจ้งเตือน', "ไม่มีข้อมูล");
           nDialog(context, 'แจ้งเตือน', 'ไม่มีข้อมูล');
         }
       }
@@ -249,14 +244,12 @@ class _LOGINState extends State<LOGIN> {
             color: Colors.red[700],
           ),
           onPressed: () {
-            // Navigator.pop(context);
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => TapControl("3")),
               (Route<dynamic> route) => false,
             );
           }),
-      // centerTitle: true,
       backgroundColor: Colors.grey[100],
       title: Text(
         "เข้าสู่ระบบ",
@@ -461,8 +454,6 @@ class _LOGINState extends State<LOGIN> {
                           onPressed: () {}),
                     ]).show();
               } else if (defaultTargetPlatform == TargetPlatform.android) {
-                print('Phone>>android');
-                // normalDialog(context, 'แจ้งเตือน', "กรุณากรอก Username");
                 nDialog(context, 'แจ้งเตือน', 'กรุณากรอก Username');
               }
             } else if (password.text.isEmpty) {
@@ -478,8 +469,6 @@ class _LOGINState extends State<LOGIN> {
                           onPressed: () {}),
                     ]).show();
               } else if (defaultTargetPlatform == TargetPlatform.android) {
-                print('Phone>>android');
-                // normalDialog(context, 'แจ้งเตือน', "กรุณากรอก Password");
                 nDialog(context, 'แจ้งเตือน', 'กรุณากรอก Password');
               }
             } else {

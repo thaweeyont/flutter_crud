@@ -81,18 +81,53 @@ class _TapControlState extends State<TapControl> {
     double size = MediaQuery.of(context).size.width;
     double size_h = MediaQuery.of(context).size.height;
     return Scaffold(
-      // backgroundColor: Colors.grey[50],
       body: Container(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-
       bottomNavigationBar: (orientation == Orientation.portrait)
           ? bottonNavigator(size, size_h)
           : null,
     );
   }
 
-  Widget bottonNavigator(size, size_h) => BottomNavigationBar(
+  Widget bottonNavigator(size, size_h) {
+    final items = [
+      {'icon': Icons.home, 'label': 'หน้าหลัก'},
+      {'icon': Icons.pin_drop_sharp, 'label': 'ติดตามสินค้า'},
+      {'icon': Icons.contact_support_rounded, 'label': 'ช่วยเหลือ'},
+      {'icon': Icons.account_circle, 'label': 'โปรไฟล์'},
+    ];
+    return BottomNavigationBar(
+      backgroundColor: Colors.white,
+      elevation: 15,
+      type: BottomNavigationBarType.fixed,
+      showSelectedLabels: true,
+      unselectedLabelStyle: TextStyle(fontFamily: 'Prompt'),
+      selectedLabelStyle: TextStyle(
+        fontFamily: 'Prompt',
+        fontSize: size_h * 0.016,
+      ),
+      selectedFontSize: size_h * 0.014,
+      unselectedFontSize: size_h * 0.014,
+      selectedItemColor: Colors.red[600],
+      unselectedItemColor: Colors.grey[400],
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+      items: items
+          .map(
+            (item) => BottomNavigationBarItem(
+              icon: Icon(
+                item['icon'] as IconData,
+                size: size * 0.06,
+              ),
+              label: item['label'] as String,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget bottonNavigator222(size, size_h) => BottomNavigationBar(
         backgroundColor: Colors.white,
         elevation: 15,
         selectedLabelStyle: TextStyle(

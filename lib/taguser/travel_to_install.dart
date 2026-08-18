@@ -10,7 +10,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+// import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter_animated_dialog_updated/flutter_animated_dialog.dart';
 import 'package:flutter_crud/profile/profile_user.dart';
 import 'package:flutter_crud/taguser/add_score.dart';
 import 'package:flutter_crud/taguser/detail_user.dart';
@@ -1093,26 +1094,28 @@ class _TravelToInstallState extends State<TravelToInstall>
           padding: EdgeInsets.all(12),
           margin: EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
           decoration: BoxDecoration(
-              // color: Colors.white70,
-              gradient: LinearGradient(
-                  colors: [
-                    Color.fromRGBO(238, 208, 110, 1),
-                    Color.fromRGBO(250, 227, 152, 0.9),
-                    Color.fromRGBO(212, 163, 51, 0.8),
-                    Color.fromRGBO(250, 227, 152, 0.9),
-                    Color.fromRGBO(164, 128, 44, 1),
-                  ],
-                  // begin: Alignment.topCenter,
-                  // end: Alignment.bottomCenter,
-                  // stops: [0.0, 1.0],
-                  tileMode: TileMode.mirror),
-              borderRadius: BorderRadius.circular(100),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 0,
-                    offset: Offset.zero)
-              ]),
+            // color: Colors.white70,
+            gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(238, 208, 110, 1),
+                  Color.fromRGBO(250, 227, 152, 0.9),
+                  Color.fromRGBO(212, 163, 51, 0.8),
+                  Color.fromRGBO(250, 227, 152, 0.9),
+                  Color.fromRGBO(164, 128, 44, 1),
+                ],
+                // begin: Alignment.topCenter,
+                // end: Alignment.bottomCenter,
+                // stops: [0.0, 1.0],
+                tileMode: TileMode.mirror),
+            borderRadius: BorderRadius.circular(100),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(90),
+                blurRadius: 0,
+                offset: Offset.zero,
+              )
+            ],
+          ),
           child: Container(
             // padding: EdgeInsets.only(left: 5, right: 5),
             child: Row(
